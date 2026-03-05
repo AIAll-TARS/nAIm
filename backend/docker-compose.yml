@@ -20,7 +20,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "18792:8000"
+      - "18795:8000"
     environment:
       DATABASE_URL: postgresql://naim:${DB_PASSWORD}@db:5432/naim
       API_KEYS_RAW: ${API_KEYS_RAW}
@@ -34,7 +34,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "18793:8001"
+      - "18796:8001"
     command: ["python", "-m", "app.mcp.server", "--sse", "--port", "8001"]
     environment:
       NAIM_API_URL: http://api:8000
