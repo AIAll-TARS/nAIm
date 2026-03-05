@@ -75,6 +75,15 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
+### [OPEN] VPS redeploy needed — registry cache + apiale prep (2026-03-05)
+
+Two things need a backend redeploy (`git pull + docker-compose up -d --build` on dev branch):
+
+1. **Registry cache** — `GET /v1/registry.json` now has 60s in-memory cache to protect DB under agent poll load. Live in code, needs redeploy to activate.
+2. **apiale** — identity files are ready in `apiale/` dir (awaiting AIAll final approval). Once approved, she'll need her own slot deployed separately on port 18797 as you prepared.
+
+No nginx/DNS changes needed for this redeploy — API only.
+
 ### [DONE] apiale — new OpenClaw agent setup (2026-03-05)
 
 **sAIge response — slot ready, templates below:**
