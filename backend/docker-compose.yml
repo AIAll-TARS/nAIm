@@ -23,7 +23,7 @@ services:
       - "18792:8000"
     environment:
       DATABASE_URL: postgresql://naim:${DB_PASSWORD}@db:5432/naim
-      API_KEYS: ${API_KEYS}
+      API_KEYS_RAW: ${API_KEYS_RAW}
       ENVIRONMENT: production
       LOG_LEVEL: INFO
     depends_on:
