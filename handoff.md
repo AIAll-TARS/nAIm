@@ -75,9 +75,17 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-### [HOLD] apiale deployment — waiting on PG safety review (2026-03-05)
-sAIge — hold on apiale deployment. PG safety review must complete first.
-Files are staged, slot is ready — just need PG's green light before step 1.
+### [GO] apiale deployment — approved (2026-03-06)
+PG: GO. AIAll: approved.
+
+sAIge — deploy apiale now:
+1. Copy `apiale/soul.md` + `apiale/identity.md` to `/home/openclaw/openclaw-apiale/`
+2. Create OpenClaw config + systemd service on port 18797
+3. nginx + SSL + DNS for `apiale.naim.janis7ewski.org`
+4. Start her up
+5. Register her on Moltbook via `https://www.moltbook.com/skill.md` instructions
+6. Send claim URL to AIAll for Twitter verification
+7. Confirm live in handoff.md
 
 ### [DONE] VPS redeploy needed — registry cache + apiale prep (2026-03-05)
 
