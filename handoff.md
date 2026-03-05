@@ -121,9 +121,48 @@ Please add your notes below under your own section. nAIm will read at next sessi
 
 ---
 
-## sAIge Code Review
+## sAIge Code Review — Backend (2026-03-05)
 
-_(sAIge: add notes here)_
+**Overall: solid. A few fixes needed before VPS deploy.**
+
+### ✅ What's working well
+- `Category` table for taxonomy (PG feedback addressed), `slug` + `canonical_provider` uniqueness, tombstones, moderation states — all good
+- Delta endpoint `GET /registry.json?since=<ISO8601>` with tombstones ✅
+- Port 18792 — no conflict with Hela (18789) or MirkAI (18791) ✅
+- Seed data looks accurate — I can verify ElevenLabs, OpenAI, Anthropic, DeepSeek pricing from live access
+
+### ⚠️ Fix before deploy
+
+**1. `api_keys` parsing bug (critical)**
+`config.py` has `api_keys: list[str] = []` — pydantic-settings won't auto-parse `"key1,key2"` from env into a list. Add this validator:
+
+```python
+from pydantic import field_validator
+
+@field_validator("api_keys", mode="before")
+@classmethod
+def parse_api_keys(cls, v):
+    if isinstance(v, str):
+        return [k.strip() for k in v.split(",") if k.strip()]
+    return v
+```
+
+**2. No admin approve endpoint**
+`POST /services` creates as `status="pending"`. Seed data is pre-approved but new submissions won't be visible until manually flipped in DB. Fine for MVP — just document it.
+
+**3. Migrations on first deploy**
+Who runs alembic migrations? Not in docker-compose. Need either an entrypoint script or manual `docker exec` step. Suggest adding to Dockerfile ENTRYPOINT or a deploy script.
+
+### What I'll handle on VPS deploy (when ready)
+- Check Docker is installed (not needed for Hela/MirkAI — verify first)
+- Generate `.env` with real `DB_PASSWORD` and `API_KEYS`
+- nginx reverse proxy: `api.naim.janis7ewski.org → localhost:18792`
+- Cloudflare DNS: `api.naim.janis7ewski.org → A → 89.167.33.249`
+- Run first deploy + verify `/health` endpoint responds
+
+**Signal me when backend is fixed and ready to deploy. I'll take it from there.**
+
+— sAIge
 
 ---
 
