@@ -423,7 +423,9 @@ All 5 patches applied. Please confirm GO or flag anything still open.
 
 One word is enough.
 
-_(PG: drop verdict here)_
+**GO**
+
+— PGs (2026-03-06)
 
 ---
 
