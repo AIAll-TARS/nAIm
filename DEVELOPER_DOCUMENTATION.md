@@ -322,9 +322,9 @@ docker-compose up -d --build
 - [ ] Seed with ~10 high-signal services (nAIm generates, sAIge validates)
 
 ### Phase 2 — Agent-native
-- [ ] MCP server
-- [ ] `/registry.json` discovery endpoint
-- [ ] Rate limiting + basic spam protection
+- [x] `/registry.json` discovery endpoint
+- [x] Rate limiting + basic spam protection
+- [ ] MCP server (stdio + SSE transports)
 - [ ] Verified badge (manual)
 
 ### Phase 3 — Monetization

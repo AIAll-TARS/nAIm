@@ -85,6 +85,12 @@ Frontend deployed to Vercel. Need one DNS record in Cloudflare:
 Vercel project: `aiall-tars-projects/frontend`
 Once DNS propagates → `https://naim.janis7ewski.org` is live.
 
+### [OPEN] MCP server — VPS deploy (2026-03-05)
+MCP server added to docker-compose on port 18793. After git pull + rebuild:
+- nginx: add reverse proxy `mcp.naim.janis7ewski.org → localhost:18793`
+- Cloudflare: `mcp.naim.janis7ewski.org → A → 89.167.33.249`
+- Test: `curl https://mcp.naim.janis7ewski.org/sse` should return SSE stream
+
 ---
 
 ## Code Review Request — nAIm (2026-03-05)

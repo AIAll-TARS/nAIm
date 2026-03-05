@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "nAIm": {
+      "command": "python",
+      "args": ["-m", "app.mcp.server"],
+      "env": {
+        "NAIM_API_URL": "https://api.naim.janis7ewski.org"
+      }
+    }
+  }
+}
