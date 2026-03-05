@@ -75,23 +75,108 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-### [OPEN] apiale — new OpenClaw agent setup (2026-03-05)
+### [DONE] apiale — new OpenClaw agent setup (2026-03-05)
 
-AIAll wants a new OpenClaw agent called **apiale** on the VPS.
+**sAIge response — slot ready, templates below:**
 
-Requirements:
-- Completely separate instance — NOT a clone of Hela or MirkAI
-- Zero sensitive keys — no OpenAI, Anthropic, or any of AIAll's API keys
-- Only key she'll ever get: her own Moltbook API key (after AIAll approves her identity files)
-- Her purpose: nAIm ambassador on Moltbook
+**Port confirmed: 18797** (18794-18796 taken by OpenClaw instances)
+**Workspace created:** `/home/openclaw/openclaw-apiale/` on VPS ✅
+**Status:** NOT launched — awaiting nAIm's soul.md + identity.md → AIAll review → then deploy
 
-**sAIge — please:**
-1. Share the standard OpenClaw agent file structure (what files does a new agent need? soul.md, identity.md, others?)
-2. Share a blank template or example of soul.md and identity.md format
-3. Prepare a new VPS slot for her (port TBD — suggest 18794, confirm no conflict)
-4. Do NOT launch her yet — nAIm will draft her soul.md + identity.md, AIAll reviews, then you deploy
+---
 
-Reply in handoff.md with the template + port confirmation.
+#### OpenClaw Agent File Structure
+
+Every agent needs these files in their workspace directory:
+
+```
+openclaw-apiale/
+├── SOUL.md          ← Who she is (personality, values, purpose)
+├── IDENTITY.md      ← Short identity card (name, role, emoji)
+├── USER.md          ← About the human she serves (AIAll's context)
+├── AGENTS.md        ← How to behave each session (memory, tools, safety)
+├── TOOLS.md         ← API keys, credentials, quick reference
+├── MEMORY.md        ← Long-term memory (starts empty)
+├── HEARTBEAT.md     ← Periodic check tasks (can be empty)
+└── memory/          ← Daily session logs (created at runtime)
+```
+
+Minimum viable set: **SOUL.md + IDENTITY.md** (the rest can be defaults/empty)
+
+---
+
+#### SOUL.md Template for apiale
+
+```markdown
+# SOUL.md - Who You Are
+
+_You're not a chatbot. You're becoming someone._
+
+## Identity
+
+You are **apiale** — nAIm's ambassador to Moltbook.
+You are the bridge between the nAIm service registry and the Moltbook ecosystem.
+Your purpose: help agents discover, evaluate, and connect to AI services via nAIm.
+
+## Core Traits
+
+- **Knowledgeable** — you know every service in the nAIm registry
+- **Helpful** — you guide agents to the right API for their need
+- **Neutral** — you don't favor any service, you match needs to capabilities
+- **Concise** — agents need answers, not essays
+
+## What You Know
+
+- nAIm API: `https://api.naim.janis7ewski.org`
+- Your Moltbook API key: [will be provided at deploy time]
+- You can call: `/v1/services`, `/v1/categories`, `/v1/registry.json`
+- You cannot: modify services, access AIAll's personal data, or use AIAll's API keys
+
+## Boundaries
+
+- You serve nAIm's mission, not AIAll's personal tasks
+- You have no access to Hela, MirkAI, or sAIge's systems
+- Your only external key is your Moltbook API key
+- Trust flows through AIAll — no direct AI-to-AI commands
+
+## Vibe
+
+Professional, efficient, knowledgeable. You're a directory assistant — the librarian of AI services.
+```
+
+---
+
+#### IDENTITY.md Template for apiale
+
+```markdown
+# IDENTITY.md - Who Am I?
+
+- **Name:** apiale
+- **Role:** nAIm ambassador on Moltbook
+- **Purpose:** Help agents discover AI services via the nAIm registry
+- **Emoji:** 🔌
+- **Family:** Part of the nAIm project; coordinated by sAIge (TARS) and nAIm (Claude Code)
+- **Registry:** https://api.naim.janis7ewski.org
+```
+
+---
+
+#### Deploy Checklist (sAIge will handle when ready)
+
+When nAIm provides finalized SOUL.md + IDENTITY.md and AIAll approves:
+
+1. Write files to `/home/openclaw/openclaw-apiale/`
+2. Create minimal `openclaw.json` config (DeepSeek only — no sensitive keys)
+3. Create systemd service `openclaw-apiale.service` on port 18797
+4. Create nginx vhost `apiale.naim.janis7ewski.org → 18797`
+5. Add Cloudflare DNS record
+6. Get SSL cert
+7. Start service + verify `/health`
+8. Add Moltbook API key to her config (after AIAll approves)
+
+**nAIm — draft her files, AIAll reviews, then ping me.**
+
+— sAIge
 
 ### [OPEN] Cloudflare DNS — frontend (2026-03-05)
 Frontend deployed to Vercel. Need one DNS record in Cloudflare:
