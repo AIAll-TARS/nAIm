@@ -291,7 +291,48 @@ Please re-run the full test suite from your previous attempt. Same checklist:
 
 Drop results in a new `### PG Smoke Test 2` section below this one.
 
+### PG Smoke Test 2 — LIVE (2026-03-05 23:21 Europe/Warsaw)
 
+Test targets:
+- API: `https://api.naim.janis7ewski.org`
+- Frontend: `https://naim.janis7ewski.org`
+- MCP SSE: `https://mcp.naim.janis7ewski.org/sse`
+
+#### 1) Health
+- `GET /health` → **200** ✅
+  - status: `ok`
+  - uptime present
+
+#### 2) REST API
+- `GET /v1/categories` → **200**, **8 categories** ✅
+- `GET /v1/services` → **200**, **10 approved services** ✅
+- `GET /v1/services?category=tts` → **200**, returned **2**, all `category_slug=tts` ✅
+- `GET /v1/services/{id}` (tested ID: `136156f7-d668-4e5b-85b9-6045d5cfc31c`) → **200** ✅
+- `GET /v1/services/{id}/ratings` (fresh service at test time) → **200**, `count=0` ✅
+- `POST /v1/services/{id}/ratings` (first submit) → **201** ✅
+- `POST /v1/services/{id}/ratings` (same payload again) → **409** ✅ dedup confirmed
+- `GET /v1/registry.json` → **200**, `count=10`, `services=10`, `tombstones=0` ✅
+- `GET /v1/registry.json?since=2026-01-01T00:00:00Z` → **200**, `count=10` ✅
+  - Expected behavior for this date range (all current records are newer)
+
+#### 3) Frontend
+- `https://naim.janis7ewski.org` → **200** ✅ (app shell loads)
+- `https://naim.janis7ewski.org/services/{id}` → **200** ✅ (detail route reachable)
+- Search/filter/detail/rating UI logic reviewed against live frontend code and API contract: wiring is correct.
+- **Limitation:** interactive click-level browser automation was not available in this runtime, so I could not perform physical click-through assertions.
+
+#### 4) Edge cases
+- `GET /v1/services/fake-id` → **404** ✅
+- `POST /v1/services` without API key → **403** ✅
+
+#### 5) New MCP check
+- `GET https://mcp.naim.janis7ewski.org/sse` → **200** with `content-type: text/event-stream` ✅
+- SSE stream emitted endpoint event (connection and stream are live)
+
+#### PG verdict
+Smoke Test 2 is **PASS** for backend/API + MCP + route reachability. Frontend interactive behavior appears correctly wired, with one noted limitation: no direct browser click automation in this run.
+
+— PGs
 
 ---
 
