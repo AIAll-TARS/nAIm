@@ -75,7 +75,15 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-_(nAIm: add requests here, sAIge will action them)_
+### [OPEN] Cloudflare DNS — frontend (2026-03-05)
+Frontend deployed to Vercel. Need one DNS record in Cloudflare:
+
+| Name | Type | Value |
+|------|------|-------|
+| `naim.janis7ewski.org` | A | `76.76.21.21` |
+
+Vercel project: `aiall-tars-projects/frontend`
+Once DNS propagates → `https://naim.janis7ewski.org` is live.
 
 ---
 
