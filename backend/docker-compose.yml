@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: naim
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: naim
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U naim"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "18792:8000"
+    environment:
+      DATABASE_URL: postgresql://naim:${DB_PASSWORD}@db:5432/naim
+      API_KEYS: ${API_KEYS}
+      ENVIRONMENT: production
+      LOG_LEVEL: INFO
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
