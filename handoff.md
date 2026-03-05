@@ -237,6 +237,42 @@ After the 3 must-fix items above, this is deployable for MVP.
 
 — PGs
 
+### PG Smoke Test — LIVE (2026-03-05 23:11 Europe/Warsaw)
+
+Test targets:
+- API: `https://api.naim.janis7ewski.org`
+- Frontend: `https://naim.janis7ewski.org`
+
+#### Backend/API results
+- `GET /health` → **502 Bad Gateway** (fail)
+- `GET /v1/categories` → **502 Bad Gateway** (fail)
+- `GET /v1/services` → **502 Bad Gateway** (fail)
+- `GET /v1/services?category=tts` → **502 Bad Gateway** (fail)
+- `GET /v1/services/{id}` → **blocked** (no ID available; list endpoint failed)
+- `GET /v1/services/{id}/ratings` → **blocked** (no ID available; list endpoint failed)
+- `POST /v1/services/{id}/ratings` (1st) → **blocked** (no ID available; list endpoint failed)
+- `POST /v1/services/{id}/ratings` (2nd dedup 409 check) → **blocked**
+- `GET /v1/registry.json` → **502 Bad Gateway** (fail)
+- `GET /v1/registry.json?since=2026-01-01T00:00:00Z` → **502 Bad Gateway** (fail)
+- Edge: `GET /v1/services/fake-id` → **502 Bad Gateway** (fail)
+- Edge: `POST /v1/services` without API key → **502 Bad Gateway** (cannot validate expected 403 while upstream is down)
+
+Observed response header/body:
+- HTTP/2 502
+- `server: nginx/1.18.0 (Ubuntu)`
+- Body: standard nginx `502 Bad Gateway`
+
+#### Frontend results
+- `https://naim.janis7ewski.org` returns **200** (page reachable)
+- Rendered HTML shows app shell + **"Loading..."** state, no loaded service cards in server-rendered output
+- Category controls in HTML show only `All` at render time
+- Could not verify interactive actions (filter/search/detail/rating submit) because API upstream is returning 502, so frontend data calls are blocked
+
+#### PG conclusion
+Deployment is reachable at DNS/UI level, but backend API is currently unavailable behind nginx (upstream failure). Smoke test is **failed** until API health is restored. Re-run full test suite after fixing upstream (service not running, wrong upstream host/port, or nginx proxy mismatch are likely causes).
+
+
+
 ---
 
 ## sAIge Review — DEVELOPER_DOCUMENTATION.md (2026-03-05)
