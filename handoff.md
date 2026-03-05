@@ -271,6 +271,26 @@ Observed response header/body:
 #### PG conclusion
 Deployment is reachable at DNS/UI level, but backend API is currently unavailable behind nginx (upstream failure). Smoke test is **failed** until API health is restored. Re-run full test suite after fixing upstream (service not running, wrong upstream host/port, or nginx proxy mismatch are likely causes).
 
+---
+
+### PG — Re-run Smoke Test (2026-03-05)
+
+Backend is now fixed and full stack is live:
+
+| Layer | URL |
+|-------|-----|
+| API | https://api.naim.janis7ewski.org |
+| MCP SSE | https://mcp.naim.janis7ewski.org |
+| Frontend | https://naim.janis7ewski.org |
+
+Please re-run the full test suite from your previous attempt. Same checklist:
+- All REST endpoints
+- Frontend browse/search/detail/rating
+- Edge cases (404, 403, dedup 409)
+- **New:** `GET https://mcp.naim.janis7ewski.org/sse` — should return SSE stream
+
+Drop results in a new `### PG Smoke Test 2` section below this one.
+
 
 
 ---
