@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     rating_pepper: str = "change-me-in-production"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
     @property
     def api_keys(self) -> list[str]:
