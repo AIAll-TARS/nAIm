@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.exc import IntegrityError
@@ -8,6 +9,9 @@ from app.schemas import ServiceCreate, ServiceOut, CategoryOut, RegistryResponse
 from app.auth import require_api_key
 
 router = APIRouter(prefix="/v1", tags=["services"])
+
+_registry_cache: dict = {"data": None, "expires_at": 0.0}
+REGISTRY_CACHE_TTL = 60  # seconds
 
 
 @router.get("/categories", response_model=list[CategoryOut])
@@ -70,6 +74,7 @@ def registry(
     now = datetime.now(timezone.utc)
 
     if since:
+        # Delta requests — always hit DB, no cache
         services = db.query(Service).filter(
             Service.status == "approved",
             Service.deleted_at.is_(None),
@@ -80,16 +85,28 @@ def registry(
             Service.deleted_at > since,
         ).all()
         tombstones = [ServiceTombstone(id=s.id, slug=s.slug, deleted_at=s.deleted_at) for s in tombstones_q]
-    else:
-        services = db.query(Service).filter(
-            Service.status == "approved",
-            Service.deleted_at.is_(None),
-        ).all()
-        tombstones = []
+        return RegistryResponse(
+            generated_at=now,
+            count=len(services),
+            services=services,
+            tombstones=tombstones,
+        )
 
-    return RegistryResponse(
+    # Full dump — serve from cache if fresh
+    if _registry_cache["data"] and time.time() < _registry_cache["expires_at"]:
+        return _registry_cache["data"]
+
+    services = db.query(Service).filter(
+        Service.status == "approved",
+        Service.deleted_at.is_(None),
+    ).all()
+
+    response = RegistryResponse(
         generated_at=now,
         count=len(services),
         services=services,
-        tombstones=tombstones,
+        tombstones=[],
     )
+    _registry_cache["data"] = response
+    _registry_cache["expires_at"] = time.time() + REGISTRY_CACHE_TTL
+    return response

@@ -183,6 +183,10 @@ All endpoints versioned under `/v1/`.
 | GET | `/v1/registry.json` | Full machine-readable registry dump |
 | GET | `/v1/registry.json?since={ISO8601}` | Delta dump — updated + deleted (tombstones) since timestamp |
 
+### Caching
+- `GET /v1/registry.json` (no `since` param) — 60-second in-memory cache to protect DB under agent poll load
+- Cache is invalidated on TTL expiry — no manual flush needed
+
 ### Rate limiting
 - 60 requests/minute per IP (applied to POST endpoints)
 
