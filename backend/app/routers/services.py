@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Service, Category
@@ -29,6 +30,7 @@ def list_services(
 def get_service(service_id: str, db: Session = Depends(get_db)):
     service = db.query(Service).filter(
         Service.id == service_id,
+        Service.status == "approved",
         Service.deleted_at.is_(None),
     ).first()
     if not service:
@@ -51,7 +53,11 @@ def create_service(
 
     service = Service(**payload.model_dump())
     db.add(service)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Service already exists (slug or provider+url conflict)")
     db.refresh(service)
     return service
 

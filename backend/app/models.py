@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, Float, Boolean, ForeignKey, UniqueConstraint, DateTime, Text
+from sqlalchemy import String, Float, Boolean, ForeignKey, UniqueConstraint, DateTime, Text, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
@@ -49,6 +49,9 @@ class Service(Base):
 
 class Rating(Base):
     __tablename__ = "ratings"
+    __table_args__ = (
+        UniqueConstraint("service_id", "rater_hash", name="uq_rating_per_rater"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     service_id: Mapped[str] = mapped_column(String(36), ForeignKey("services.id"), nullable=False)
@@ -62,3 +65,7 @@ class Rating(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     service: Mapped["Service"] = relationship(back_populates="ratings")
+
+
+# Index for fast delta queries
+Index("ix_service_updated_at", Service.updated_at)

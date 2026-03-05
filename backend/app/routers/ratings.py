@@ -2,16 +2,19 @@ import hashlib
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Service, Rating
 from app.schemas import RatingCreate, RatingAggregated
+from app.config import settings
 
 router = APIRouter(prefix="/v1", tags=["ratings"])
 
 
-def _rater_hash(request: Request, agent_id: str | None) -> str:
-    raw = f"{request.client.host}:{agent_id or ''}"
+def _rater_hash(service_id: str, request: Request, agent_id: str | None) -> str:
+    client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0].strip()
+    raw = f"{service_id}:{client_ip}:{agent_id or ''}:{settings.rating_pepper}"
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
@@ -62,7 +65,7 @@ def submit_rating(
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
 
-    rater_hash = _rater_hash(request, payload.agent_id)
+    rater_hash = _rater_hash(service_id, request, payload.agent_id)
 
     rating = Rating(
         service_id=service_id,
@@ -70,5 +73,9 @@ def submit_rating(
         **payload.model_dump(),
     )
     db.add(rating)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="You have already rated this service")
     return {"status": "ok", "id": rating.id}

@@ -189,8 +189,14 @@ All endpoints versioned under `/v1/`.
 ### Spam protection
 - `POST /services` requires a static API key (header: `X-API-Key`)
 - Per-key rate limits + key rotation supported from day one
-- New submissions default to `status=pending` — manually approved
+- New submissions default to `status=pending` — manually approved via DB (no admin UI in MVP)
 - Open read access (`GET` endpoints) remains unauthenticated
+- `API_KEYS` env var is comma-separated string, parsed via field_validator in config
+
+### Rating dedup
+- `rater_hash` = SHA256(service_id + client_IP + pepper) stored per rating
+- Unique constraint on `(service_id, rater_hash)` — duplicate rating returns 409
+- `agent_id` is self-reported and not used for dedup
 
 ---
 
