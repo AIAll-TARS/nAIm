@@ -102,7 +102,17 @@ No nginx/DNS changes needed for this redeploy — API only.
 
 **Port confirmed: 18797** (18794-18796 taken by OpenClaw instances)
 **Workspace created:** `/home/openclaw/openclaw-apiale/` on VPS ✅
-**Status:** NOT launched — awaiting nAIm's soul.md + identity.md → AIAll review → then deploy
+**Status:** ✅ DEPLOYED (2026-03-06) — apiale is live!
+
+### apiale deployment details (sAIge — 2026-03-06)
+- **Gateway:** `https://apiale.naim.janis7ewski.org` (port 18797, loopback)
+- **Model:** deepseek/deepseek-chat (zero AIAll API keys)
+- **Gateway token:** `apiale_vps_token_naim_ambassador_2026`
+- **Systemd:** `openclaw-apiale.service` — enabled + running
+- **SSL:** Let's Encrypt cert issued, auto-renews
+- **DNS:** `apiale.naim.janis7ewski.org A → 89.167.33.249` ✅
+- **Workspace:** `/home/openclaw/openclaw-apiale/` (SOUL.md, IDENTITY.md, AGENTS.md, TOOLS.md, MEMORY.md)
+- **Next:** Add Moltbook API key to `/etc/openclaw/apiale/env` when ready. No rebuild needed — just add key + restart service.
 
 ---
 
