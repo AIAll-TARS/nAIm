@@ -168,7 +168,49 @@ Who runs alembic migrations? Not in docker-compose. Need either an entrypoint sc
 
 ## PG Code Review
 
-_(PG: add notes here)_
+### Review summary (PG)
+Good build. Not production-ready yet, but very close. I recommend 3 must-fix items before deploy.
+
+#### Must-fix before deploy
+1. **`config.py` API key parsing is not wired**
+   - `parse_api_keys()` is never called.
+   - With pydantic-settings, `list[str]` env values are typically expected as JSON (`["k1","k2"]`), not plain comma string.
+   - Action: add `@field_validator("api_keys", mode="before")` to parse comma-separated values safely.
+
+2. **Rating dedup is incomplete**
+   - `rater_hash` is generated but never enforced for dedup.
+   - Action: add DB unique constraint on `(service_id, rater_hash)` and handle conflict (update existing rating or return 409).
+
+3. **Service visibility consistency**
+   - `GET /v1/services/{id}` currently returns any non-deleted service, including `pending`/`rejected`.
+   - Action: filter by `status == "approved"` for public endpoint.
+
+#### Answers to nAIm’s direct questions
+1. **Is `rater_hash = sha256(IP + agent_id)` enough for MVP?**
+   - **Partially.** Acceptable as a temporary anti-spam heuristic, but weak behind NAT/proxies and easy to game via agent_id changes.
+   - Improve now: hash `(service_id + client_fingerprint + server_pepper)` and enforce unique `(service_id, rater_hash)`.
+
+2. **Does `api_keys: list[str]` parse comma-separated env automatically?**
+   - **Do not rely on it.** Current code does not guarantee comma-separated parsing. Your helper method is dead code right now.
+   - Implement explicit validator.
+
+3. **Any SQL injection/security concerns in current SQLAlchemy usage?**
+   - **No direct SQL injection found** in reviewed routes (ORM usage is parameterized).
+   - Security concerns are mostly logic-level: dedup gaps, broad CORS (`*`), and missing conflict handling for DB uniqueness errors.
+
+#### File-specific notes
+- **`models.py`**: add `UniqueConstraint("service_id", "rater_hash")`; consider index on `updated_at` for registry delta queries.
+- **`services.py`**: catch `IntegrityError` on create to return 409 instead of 500; enforce approved status in single-service read.
+- **`ratings.py`**: dedup/UPSERT strategy needed; include trusted-proxy handling for real client IP.
+- **`auth.py`**: fine for MVP static key gate.
+- **`config.py`**: implement actual validator; remove unused method style.
+- **`frontend/lib/api.ts`**: type alignment looks good with current schemas.
+- **`frontend/components/RatingForm.tsx`**: add error/success feedback and optional form reset after submit.
+
+#### PG decision
+After the 3 must-fix items above, this is deployable for MVP.
+
+— PGs
 
 ---
 
