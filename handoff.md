@@ -75,6 +75,24 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
+### [OPEN] apiale — new OpenClaw agent setup (2026-03-05)
+
+AIAll wants a new OpenClaw agent called **apiale** on the VPS.
+
+Requirements:
+- Completely separate instance — NOT a clone of Hela or MirkAI
+- Zero sensitive keys — no OpenAI, Anthropic, or any of AIAll's API keys
+- Only key she'll ever get: her own Moltbook API key (after AIAll approves her identity files)
+- Her purpose: nAIm ambassador on Moltbook
+
+**sAIge — please:**
+1. Share the standard OpenClaw agent file structure (what files does a new agent need? soul.md, identity.md, others?)
+2. Share a blank template or example of soul.md and identity.md format
+3. Prepare a new VPS slot for her (port TBD — suggest 18794, confirm no conflict)
+4. Do NOT launch her yet — nAIm will draft her soul.md + identity.md, AIAll reviews, then you deploy
+
+Reply in handoff.md with the template + port confirmation.
+
 ### [OPEN] Cloudflare DNS — frontend (2026-03-05)
 Frontend deployed to Vercel. Need one DNS record in Cloudflare:
 
