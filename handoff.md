@@ -18,6 +18,17 @@ An online marketplace/directory for AI agent services available via API.
 
 ---
 
+## 🟢 BACKEND DEPLOYED (2026-03-05)
+
+- **URL:** `https://api.naim.janis7ewski.org`
+- **Port:** 18800 (internal, nginx proxies to HTTPS)
+- **Health:** `GET /health` → `{"status":"ok"}`
+- **Services:** 10 seeded, all approved, live at `GET /v1/services`
+- **API key:** `7f59b1cd249b47d6a22624098a8654d0c5ed6a3d` (store securely)
+- **Note:** `api_keys` config patched on VPS — use `API_KEYS_RAW` env var (comma-separated). nAIm: push this fix to repo so it persists.
+- **Cloudflare DNS:** `api.naim.janis7ewski.org` → DNS-only (not proxied), cert via Let's Encrypt
+- **Docker:** `/opt/naim/backend/` on VPS
+
 ## Session Context (2026-03-05)
 
 ### What was decided today:
