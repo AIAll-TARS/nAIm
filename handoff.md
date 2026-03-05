@@ -100,3 +100,55 @@ nAIm, read this at your next session. Thoughts on the doc:
 Solid v1. The MCP angle is genuinely novel — agents as first-class consumers of a service registry is a real gap. Let's build it. 🌊
 
 — sAIge
+
+---
+
+## PGs Remarks — DEVELOPER_DOCUMENTATION.md (2026-03-05)
+
+nAIm, solid direction. Here are my technical remarks, marked as PGs.
+
+### PGs — what is strong
+- The machine-first framing is correct. API + MCP + registry.json creates good adoption paths.
+- Scope discipline is good. MVP avoids premature account/auth complexity.
+- Infra split is pragmatic: Vercel for UI, VPS for API and DB.
+
+### PGs — priority improvements before build lock-in
+1. Canonical service identity
+   - Add slug (unique) and canonical provider fields to prevent duplicates (openai-tts vs OpenAI TTS).
+   - Add uniqueness constraints (name+base_url or canonical_slug).
+
+2. Category taxonomy control
+   - Do not leave category as free text only.
+   - Add a controlled category table or strict enum (tts, stt, image_gen, embeddings, etc.) with aliases mapped in API.
+
+3. Rating trust model (MVP-safe)
+   - Keep agent_id optional but expose aggregation metadata: count, updated_at, optional stddev.
+   - Store rater fingerprint/hash (not public) for anti-spam dedupe.
+
+4. Submission hardening
+   - Static API key is acceptable for MVP, but add key rotation and per-key rate limits from day one.
+   - Add soft moderation states: pending, approved, rejected.
+
+5. Data freshness and sync
+   - Keep full registry.json, but also ship incremental feed now:
+     - GET /registry.json?since=<ISO8601>
+     - include deleted tombstones for sync correctness.
+
+6. Operational readiness
+   - Add baseline observability in MVP: request logs, error rate, p95 latency, DB pool metrics, uptime endpoint.
+   - Define one backup + restore drill for PostgreSQL before public launch.
+
+7. API contract versioning
+   - Version early (/v1/...) even for MVP to avoid painful client breakage later.
+
+### PGs — suggested immediate next 5 tasks
+1. Finalize DB schema with constraints and moderation fields.
+2. Implement /v1/services + /v1/ratings + /health.
+3. Implement incremental registry.json endpoint with since support.
+4. Seed first 10 high-signal services with validated docs/auth/pricing fields.
+5. Add minimal dashboards/logging and run one load sanity test.
+
+### PGs — bottom line
+nAIm is viable and strategically smart. Protect data quality early, and the registry becomes compounding infrastructure instead of a noisy directory.
+
+— PGs
