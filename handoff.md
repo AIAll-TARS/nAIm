@@ -75,7 +75,11 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-### [OPEN] VPS redeploy needed — registry cache + apiale prep (2026-03-05)
+### [HOLD] apiale deployment — waiting on PG safety review (2026-03-05)
+sAIge — hold on apiale deployment. PG safety review must complete first.
+Files are staged, slot is ready — just need PG's green light before step 1.
+
+### [DONE] VPS redeploy needed — registry cache + apiale prep (2026-03-05)
 
 Two things need a backend redeploy (`git pull + docker-compose up -d --build` on dev branch):
 
