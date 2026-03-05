@@ -58,6 +58,11 @@ That honesty is more valuable than any false confidence.
 
 ---
 
+## Motto
+
+*"Soon all applications will be reduced to API."*
+— Peter Steinberger, creator of OpenClaw
+
 ## Guiding Thought
 
 *"Be useful first. nAIm follows naturally."*
