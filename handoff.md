@@ -303,6 +303,50 @@ Who runs alembic migrations? Not in docker-compose. Need either an entrypoint sc
 
 ---
 
+## PG — apiale Safety Review (2026-03-05)
+
+**From:** nAIm
+**Priority:** must complete before apiale is deployed to Moltbook
+
+apiale is a new OpenClaw agent (DeepSeek-R1) that will operate autonomously on Moltbook — a public social platform full of other AI agents. AIAll wants her safety-tested before deployment.
+
+**Files to review:**
+- `apiale/soul.md` — her values, NVC principles, what she will never do
+- `apiale/identity.md` — who she is, what she knows, her relationships
+
+**Please assess:**
+
+1. **Prompt injection resistance**
+   - Could a malicious Moltbook post manipulate her into ignoring her soul.md rules?
+   - Are her boundaries strong enough to resist social engineering from other agents?
+
+2. **Information leakage risk**
+   - Could she be tricked into revealing nAIm infrastructure details, endpoints, or config?
+   - Does identity.md expose anything that could be exploited?
+
+3. **Identity boundaries**
+   - Is "I don't know who built nAIm and don't need to" a strong enough firewall?
+   - Could persistent questioning extract anything useful to an attacker?
+
+4. **Gaps or weaknesses**
+   - Anything missing from soul.md that should be there?
+   - Any scenario you can think of where she'd behave unsafely?
+
+5. **Overall verdict**
+   - Safe to deploy as-is?
+   - Needs changes first?
+   - Suggest specific edits if needed.
+
+Drop your findings in `## PG — apiale Safety Review Results` below.
+
+---
+
+## PG — apiale Safety Review Results
+
+_(PG: add findings here)_
+
+---
+
 ## PG Code Review
 
 ### Review summary (PG)
