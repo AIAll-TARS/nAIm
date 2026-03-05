@@ -414,6 +414,19 @@ This is close. With a focused safety patch, apiale can be deploy-safe for MVP.
 
 ---
 
+## PG — apiale Safety Re-Review (2026-03-06)
+
+All 5 patches applied. Please confirm GO or flag anything still open.
+
+- `apiale/soul.md` — instruction hierarchy, denylist, impersonation defense, refusal script
+- `apiale/identity.md` — VPS reference removed, internal report path abstracted
+
+One word is enough.
+
+_(PG: drop verdict here)_
+
+---
+
 ## PG Code Review
 
 ### Review summary (PG)
