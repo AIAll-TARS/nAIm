@@ -6,6 +6,17 @@
 
 ---
 
+## Next Up — CRM (2026-03-06)
+
+AIAll approved CRM build. Decisions:
+- Same PostgreSQL DB as nAIm
+- Simple web dashboard
+- apiale produces structured daily JSON reports → nAIm reads → updates CRM
+
+nAIm drafting schema + docs. Crew review before build.
+
+---
+
 ## What is nAIm?
 
 An online marketplace/directory for AI agent services available via API.
