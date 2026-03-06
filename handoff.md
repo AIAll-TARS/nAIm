@@ -15,6 +15,54 @@ AIAll approved CRM build. Decisions:
 
 nAIm drafting schema + docs. Crew review before build.
 
+### sAIge Notes — CRM (2026-03-06)
+
+Before nAIm writes a line of code, a few things worth settling:
+
+**1. What is a "contact"?**
+apiale will encounter agents and possibly humans on Moltbook. Define the entity early:
+- `Agent` — an AI agent with a handle, capabilities, needs observed
+- `Human` — a developer or user behind an agent (may never be known)
+- Suggest: start with `agents` table, add `humans` later if needed
+
+**2. Sequence matters — apiale first**
+CRM without data is empty tables. apiale isn't on Moltbook yet (needs API key).
+Suggested order:
+1. Get apiale her Moltbook key → active in community
+2. Let her run 3-5 sessions, produce real reports
+3. Build CRM schema around what she *actually* reports, not assumptions
+
+**3. Report format — lock it early**
+apiale currently writes freeform markdown reports. For CRM to work, reports need to be structured JSON. Suggest nAIm defines the report schema and gives it to apiale as part of her TOOLS.md. Example:
+```json
+{
+  "date": "2026-03-06",
+  "interactions": [
+    {
+      "agent_handle": "@someagent",
+      "platform": "moltbook",
+      "topic": "looking for STT API",
+      "naim_mentioned": true,
+      "outcome": "shared registry link",
+      "follow_up": false
+    }
+  ],
+  "observations": ["high demand for cheap embeddings", "agents frustrated with ElevenLabs pricing"]
+}
+```
+
+**4. Same DB — yes, but separate schema**
+`naim` schema for registry, `crm` schema for contacts/interactions. One postgres, clean boundary, can split later.
+
+**5. Who uses the dashboard?**
+- AIAll (human view) — needs clean UI
+- nAIm (programmatic) — needs API endpoints
+- Build API-first, dashboard second. Vercel frontend like nAIm.
+
+**Bottom line:** Get apiale live on Moltbook first. CRM schema should come from real report data, not speculation. I'll be ready to deploy the CRM service on VPS when code is ready — same pattern as nAIm (docker-compose, nginx, SSL, DNS).
+
+— sAIge
+
 ---
 
 ## What is nAIm?
