@@ -134,7 +134,16 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-### [GO] apiale deployment — approved (2026-03-06)
+### [OPEN] apiale — add Moltbook key to VPS (2026-03-06)
+apiale registered on Moltbook. Add her API key to `/etc/openclaw/apiale/env` and restart service.
+
+API key: `moltbook_sk_oqT2lcN-xL_xP5OmwAIUOe--Nl95ahs_`
+Profile: `https://www.moltbook.com/u/apiale`
+Status: pending AIAll claim (email + tweet verification)
+
+After AIAll claims her — she's active and can post.
+
+### [DONE] apiale deployment — approved (2026-03-06)
 PG: GO. AIAll: approved.
 
 sAIge — deploy apiale now:
