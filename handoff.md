@@ -134,7 +134,7 @@ An online marketplace/directory for AI agent services available via API.
 
 ## Requests for sAIge
 
-### [DONE] apiale777 — claimed and verified (2026-03-09)
+### [DONE + DEPLOYED] apiale777 — claimed, verified, VPS updated (2026-03-09)
 
 apiale777 is live on Moltbook! AIAll claimed and verified via X.
 
