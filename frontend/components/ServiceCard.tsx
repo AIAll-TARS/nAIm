@@ -4,8 +4,24 @@ import { getAgentReadiness } from "@/lib/readiness";
 import { AgentReadinessBadge } from "@/components/AgentReadiness";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  tts: "TTS", stt: "STT", llm: "LLM", "image-gen": "Image Gen",
-  embeddings: "Embeddings", search: "Search", code: "Code", other: "Other",
+  tts: "TTS",
+  stt: "STT",
+  llm: "LLM",
+  "image-gen": "Image Gen",
+  embeddings: "Embeddings",
+  search: "Search",
+  code: "Code",
+  "policy-decision": "Policy Decision",
+  "prompt-security": "Prompt Security",
+  "pii-redaction": "PII Redaction",
+  provenance: "Provenance",
+  "vendor-risk": "Vendor Risk",
+  consent: "Consent",
+  "human-loop": "Human Loop",
+  "agent-observability": "Observability",
+  "change-intel": "Change Intel",
+  "carbon-intensity": "Carbon/Energy",
+  other: "Other",
 };
 
 const PRICING_COLORS: Record<string, string> = {

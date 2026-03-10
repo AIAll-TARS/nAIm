@@ -14,6 +14,19 @@ CATEGORIES = [
     {"slug": "embeddings", "label": "Embeddings"},
     {"slug": "search", "label": "Search"},
     {"slug": "code", "label": "Code Generation"},
+
+    # Emerging machine-first categories
+    {"slug": "policy-decision", "label": "Policy Decision"},
+    {"slug": "prompt-security", "label": "Prompt Security"},
+    {"slug": "pii-redaction", "label": "PII Redaction"},
+    {"slug": "provenance", "label": "Provenance"},
+    {"slug": "vendor-risk", "label": "Vendor Risk"},
+    {"slug": "consent", "label": "Consent & Preferences"},
+    {"slug": "human-loop", "label": "Human-in-the-Loop"},
+    {"slug": "agent-observability", "label": "Agent Observability"},
+    {"slug": "change-intel", "label": "Change Intelligence"},
+    {"slug": "carbon-intensity", "label": "Carbon & Energy"},
+
     {"slug": "other", "label": "Other"},
 ]
 

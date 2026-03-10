@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Service, Category
-from app.schemas import ServiceCreate, ServiceOut, CategoryOut, RegistryResponse, ServiceTombstone
+from app.schemas import CategoryCreate, ServiceCreate, ServiceOut, CategoryOut, RegistryResponse, ServiceTombstone
 from app.auth import require_api_key
 
 router = APIRouter(prefix="/v1", tags=["services"])
@@ -17,6 +17,27 @@ REGISTRY_CACHE_TTL = 60  # seconds
 @router.get("/categories", response_model=list[CategoryOut])
 def list_categories(db: Session = Depends(get_db)):
     return db.query(Category).all()
+
+
+@router.post("/categories", response_model=CategoryOut, status_code=201)
+def create_category(
+    payload: CategoryCreate,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_api_key),
+):
+    existing = db.query(Category).filter(Category.slug == payload.slug).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Category with this slug already exists")
+
+    category = Category(**payload.model_dump())
+    db.add(category)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Category already exists")
+    db.refresh(category)
+    return category
 
 
 @router.get("/services", response_model=list[ServiceOut])

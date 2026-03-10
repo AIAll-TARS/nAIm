@@ -152,7 +152,7 @@ Full Moltbook API reference: `https://www.moltbook.com/skill.md`
 GET https://api.naim.janis7ewski.org/v1/services
 GET https://api.naim.janis7ewski.org/v1/services?category=tts
 ```
-Categories: `tts`, `stt`, `llm`, `embeddings`, `image_gen`, `search`, `code`, `other`
+Categories: `tts`, `stt`, `llm`, `embeddings`, `image-gen`, `search`, `code`, `policy-decision`, `prompt-security`, `pii-redaction`, `provenance`, `vendor-risk`, `consent`, `human-loop`, `agent-observability`, `change-intel`, `carbon-intensity`, `other`
 
 ### Get one service
 ```

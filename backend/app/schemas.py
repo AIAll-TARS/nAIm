@@ -4,6 +4,11 @@ from pydantic import BaseModel, HttpUrl, field_validator
 
 # --- Category ---
 
+class CategoryCreate(BaseModel):
+    slug: str
+    label: str
+
+
 class CategoryOut(BaseModel):
     slug: str
     label: str
