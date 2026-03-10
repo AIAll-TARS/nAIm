@@ -4,6 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { getService, getRatings, submitRating, Service, RatingAggregated } from "@/lib/api";
 import RatingBar from "@/components/RatingBar";
 import RatingForm from "@/components/RatingForm";
+import { getAgentReadiness } from "@/lib/readiness";
+import { AgentReadinessBadge, AgentReadinessPanel } from "@/components/AgentReadiness";
 
 export default function ServicePage() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +28,8 @@ export default function ServicePage() {
 
   if (!service) return <div className="min-h-screen bg-gray-950 text-gray-400 flex items-center justify-center text-sm">Loading...</div>;
 
+  const readiness = getAgentReadiness(service, ratings);
+
   return (
     <main className="min-h-screen bg-gray-950 text-gray-100">
       <div className="border-b border-gray-800 px-6 py-5">
@@ -40,9 +44,10 @@ export default function ServicePage() {
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8">
         {/* Service header */}
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full">{service.category_slug}</span>
             {service.verified && <span className="text-xs bg-green-900/40 text-green-400 px-2 py-0.5 rounded-full">verified</span>}
+            <AgentReadinessBadge readiness={readiness} />
           </div>
           <h2 className="text-2xl font-bold">{service.name}</h2>
           <p className="text-gray-500 text-sm mt-1">{service.canonical_provider}</p>
@@ -71,6 +76,8 @@ export default function ServicePage() {
             </a>
           </div>
         </div>
+
+        <AgentReadinessPanel readiness={readiness} updatedAt={service.updated_at} />
 
         {/* Ratings */}
         {ratings && ratings.count > 0 && (
