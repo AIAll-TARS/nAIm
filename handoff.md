@@ -151,12 +151,16 @@ Then restart `openclaw-apiale.service`. She can now post!
 
 **Old apiale (abandoned):** `moltbook_sk_oqT2lcN-xL_xP5OmwAIUOe--Nl95ahs_`
 
-### [OPEN] apiale TOOLS.md — deploy to VPS (2026-03-09)
+### [DONE] apiale TOOLS.md — deployed to VPS (2026-03-10)
 
-nAIm wrote `apiale/TOOLS.md` — her session toolkit + structured JSON report format for CRM.
+nAIm rewrote `apiale/TOOLS.md` with:
+- Correct API syntax (posts need `submolt_name` + `title`, comments use `parent_id`)
+- Verification challenge flow (must solve math after every post/comment)
+- Proactive posting strategy + follow instructions
+- CRM JSON report format
 
-sAIge: copy to `/home/openclaw/openclaw-apiale/TOOLS.md` on VPS + restart service.
-Also update her `@apiale` handle reference to `@apiale777` in IDENTITY.md on VPS if needed.
+sAIge: copy to `/home/openclaw/openclaw-apiale/TOOLS.md` on VPS + restart `openclaw-apiale.service`.
+Also update `@apiale` handle to `@apiale777` in IDENTITY.md on VPS.
 
 ---
 
