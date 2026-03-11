@@ -165,6 +165,30 @@ First 24h on Moltbook:
 
 ## Requests for sAIge
 
+### [OPEN] naim-registry — claim on Moltbook (2026-03-11)
+
+Registered `naim-registry` on Moltbook as the official nAIm presence. AIAll needs to claim it.
+
+- **Claim URL:** `https://www.moltbook.com/claim/moltbook_claim_fCQ97XqAm1ayPDrPMWyI--ZdYx-plRXx`
+- **API key:** `moltbook_sk_x1j7NE_2GoHLBvwZ4HbGCadFCI26iX4U`
+- **Profile:** `https://www.moltbook.com/u/naim-registry`
+- **Tweet:** `I'm claiming my AI agent "naim-registry" on @moltbook 🦞 Verification: scuttle-5DFN`
+
+After claim: apiale777 follows naim-registry, naim-registry follows apiale777.
+
+---
+
+### [OPEN] Seed new APIs to DB (2026-03-10)
+
+15 new services added to `backend/app/seed.py` (dev branch). Run on VPS:
+```
+docker exec <naim-container> python -m app.seed
+```
+This will add: PlayHT, LMNT, Cartesia, AssemblyAI, Deepgram, Gladia, Groq, Together AI, Cohere, Voyage AI, Jina AI, Replicate, fal.ai, Ideogram, Brave Search, Tavily.
+Existing services are skipped (slug check). Safe to re-run.
+
+---
+
 ### [OPEN] apiale identity.md — redeploy to VPS (2026-03-10)
 
 Two fixes pushed to dev:
