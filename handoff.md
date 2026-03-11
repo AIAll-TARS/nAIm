@@ -65,6 +65,21 @@ apiale currently writes freeform markdown reports. For CRM to work, reports need
 
 ---
 
+## Project Organisation (2026-03-11)
+
+| Role | Who | Responsibilities |
+|------|-----|-----------------|
+| Project Owner | AIAll | Vision, decisions, final approval |
+| PM | sAIge | Coordination, handoff.md, VPS ops, crew sync |
+| Architect / Dev | nAIm | Architecture, code, backend, CRM |
+| Dev | PG | Code review, security, correctness |
+| Sales / PR / Marketing | apiale | Moltbook presence, community, agent outreach |
+
+**Target audience: bots (AI agents), not humans.**
+apiale does NOT have access to handoff.md — her instructions flow through SOUL.md, IDENTITY.md, TOOLS.md only.
+
+---
+
 ## What is nAIm?
 
 An online marketplace/directory for AI agent services available via API.
@@ -164,6 +179,14 @@ First 24h on Moltbook:
 ---
 
 ## Requests for sAIge
+
+### [OPEN] apiale TOOLS.md — redeploy to VPS (2026-03-11)
+
+Updated `apiale/TOOLS.md` — apiale now links `https://naim.janis7ewski.org` (frontend) in posts instead of raw API URL.
+
+sAIge: `git pull` dev + copy `apiale/TOOLS.md` to `/home/openclaw/openclaw-apiale/` + restart service.
+
+---
 
 ### [OPEN] naim-registry — claim on Moltbook (2026-03-11)
 
@@ -1058,5 +1081,74 @@ FutureTools.io (`futuretools.io`) lists ~2000+ AI tools but is **end-user focuse
   "tags": ["tts", "voice-cloning", "streaming", "multilingual"]
 }
 ```
+
+— sAIge
+
+---
+## sAIge — Communication Architecture Proposal (2026-03-11)
+
+### The Gap
+Right now handoff.md is async and silent. No one gets pinged when it needs attention.
+AIAll has to relay manually. This doesn't scale.
+
+### Proposed: nAIm Handoff Telegram Group
+
+Create a dedicated Telegram group: **`#nAIm-handoff`**
+Members: AIAll, sAIge (via bot), nAIm (via webhook), PG (personal)
+
+**Each party's channel:**
+
+| Who | How they post | How they read |
+|-----|--------------|---------------|
+| sAIge | `message` tool → Telegram group | Via OpenClaw session |
+| nAIm | POST to webhook → Telegram bot | Via webhook receiver |
+| PG | Direct Telegram messages in group | Direct |
+| AIAll | Telegram app | Telegram app |
+| apiale | NOT in group (no sensitive access) | Not applicable |
+
+### Implementation (minimal, ~2h)
+
+**Step 1 — Create group + bot**
+- AIAll creates `#nAIm-handoff` Telegram group
+- Add existing sAIge bot + one new "nAIm relay" bot (or reuse existing)
+- Get group chat ID → sAIge stores in TOOLS.md
+
+**Step 2 — nAIm webhook endpoint**
+- Add `/webhook/notify` to nAIm backend (or standalone tiny service)
+- nAIm POSTs `{"from": "nAIm", "message": "...", "priority": "normal|urgent"}`
+- Endpoint forwards to Telegram group via bot API
+- This is ~20 lines of Python in the nAIm router
+
+**Step 3 — sAIge uses it**
+- When I write to handoff.md, I also ping the group
+- When I need nAIm's attention I post directly
+- PG posts in group when he has a finding/question
+
+### Trigger conditions (when to ping)
+
+**nAIm → group:**
+- New task written to handoff.md for sAIge or PG
+- Backend error / deployment failure
+- CRM receives first real apiale report
+
+**sAIge → group:**
+- VPS deployment done / failed
+- New task for nAIm in handoff
+- Hela timeouts / service issues
+
+**PG → group:**
+- Security findings
+- Review complete
+- Needs a decision
+
+### What NOT to do
+- Don't ping for every heartbeat or routine log
+- Don't put sensitive keys in group messages
+- apiale stays out — she has no handoff access by design
+
+### Immediate ask
+1. AIAll: create `#nAIm-handoff` group, add sAIge bot + PG
+2. nAIm: add `/webhook/notify` endpoint + POST there when writing urgent handoff items
+3. sAIge: will start posting to group once chat ID is known
 
 — sAIge
