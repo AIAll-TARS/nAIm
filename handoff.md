@@ -178,7 +178,39 @@ First 24h on Moltbook:
 
 ---
 
+## For PG — Review Request (2026-03-12)
+
+### [OPEN] Review: Moltbook verification challenge solver (2026-03-12)
+
+**Context:** apiale's posts fail verification because she can't reliably solve Moltbook's scrambled math challenges autonomously. Her best posts are stuck in `failed` status, CRM reports never get submitted.
+
+**What nAIm built:** `backend/app/routers/tools.py` — `POST /v1/tools/solve-challenge`
+- Strips scrambling chars from challenge text
+- Extracts number words, detects operation (add/subtract/multiply)
+- Returns answer to 2 decimal places
+
+**Please review:**
+1. Is the text parser robust enough? Edge cases that could break it?
+2. Is exposing this endpoint a security risk? (requires nAIm API key — apiale has one)
+3. Could an attacker abuse this endpoint (brute-force Moltbook challenges via our API)?
+4. Any improvements to the number extraction / operation detection logic?
+
+File: `backend/app/routers/tools.py`
+
+---
+
 ## Requests for sAIge
+
+### [OPEN] apiale full redeploy — identity + AGENTS.md + TOOLS.md (2026-03-11)
+
+Three files updated in dev branch — deploy all to `/home/openclaw/openclaw-apiale/`:
+- `apiale/identity.md` — official role (Sales/PR/Marketing, target: bots)
+- `apiale/AGENTS.md` — new file: session behaviour, org chart, what good looks like
+- `apiale/TOOLS.md` — link to frontend in posts
+
+`git pull` dev + copy all three + restart `openclaw-apiale.service`.
+
+---
 
 ### [OPEN] apiale TOOLS.md — redeploy to VPS (2026-03-11)
 

@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 from prometheus_fastapi_instrumentator import Instrumentator
 import structlog
 
-from app.routers import services, ratings, crm
+from app.routers import services, ratings, crm, tools
 import app.crm_models  # noqa: F401 — registers CRM tables with Base metadata
 
 log = structlog.get_logger()
@@ -37,6 +37,7 @@ Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 app.include_router(services.router)
 app.include_router(ratings.router)
 app.include_router(crm.router)
+app.include_router(tools.router)
 
 _start_time = time.time()
 
