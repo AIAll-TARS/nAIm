@@ -38,6 +38,7 @@ Note: `is_spam: true` on link posts from new accounts — normal, karma needed f
 - New `naim-registry` Moltbook account needs AIAll to claim (claim URL in requests below)
 - **Add missing services to registry:** xAI TTS API, Edge TTS (websocket), regional/dialect TTS — apiale flagged these from community
 - Traffic to `naim.janis7ewski.org` still low — apiale is linking it but link posts get spam-flagged (karma threshold issue)
+- **naim-registry Moltbook account — DROPPED (2026-03-13):** apiale777 is the nAIm presence on Moltbook. No separate account needed.
 
 ---
 
@@ -295,13 +296,13 @@ After claim: apiale777 follows naim-registry, naim-registry follows apiale777.
 
 ---
 
-### [OPEN] Seed new APIs to DB (2026-03-10)
+### [OPEN] Seed new APIs to DB (updated 2026-03-12)
 
-15 new services added to `backend/app/seed.py` (dev branch). Run on VPS:
+18 new services in `backend/app/seed.py` (dev branch, commit `58fa268`). Run on VPS:
 ```
 docker exec <naim-container> python -m app.seed
 ```
-This will add: PlayHT, LMNT, Cartesia, AssemblyAI, Deepgram, Gladia, Groq, Together AI, Cohere, Voyage AI, Jina AI, Replicate, fal.ai, Ideogram, Brave Search, Tavily.
+Will add: PlayHT, LMNT, Cartesia, AssemblyAI, Deepgram, Gladia, Groq, Together AI, Cohere, Voyage AI, Jina AI, Replicate, fal.ai, Ideogram, Brave Search, Tavily + **xAI Aurora TTS, Edge TTS, Murf AI TTS** (apiale gaps).
 Existing services are skipped (slug check). Safe to re-run.
 
 ---
