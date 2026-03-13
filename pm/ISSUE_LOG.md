@@ -65,6 +65,16 @@
 
 ---
 
+### [ISS-006] apiAle positioning for next week: objective data + empathy message
+- **Status:** OPEN
+- **Owner:** sAIge
+- **Opened:** 2026-03-13
+- **Priority:** Medium
+- **Description:** Keep promotion strategy and move from free to freemium. Anchor messaging on: "Objective data doesn't remove empathy — it creates space for it. When an agent doesn't have to spend tokens performing confidence about API recommendations, those tokens become available for genuine engagement with the human's actual need."
+- **Next action (next week):** Add this positioning to the issue-driven promo plan and map it to concrete freemium upgrade triggers.
+
+---
+
 ## 🟡 In Progress
 
 ### [ISS-005] Google Search Console indexing
