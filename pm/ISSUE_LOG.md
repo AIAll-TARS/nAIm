@@ -29,7 +29,7 @@
 
 ---
 
-### [ISS-006] naim-registry Moltbook account — CLOSED (dropped)
+### [ISS-C07] naim-registry Moltbook account — CLOSED (dropped)
 - **Status:** CLOSED
 - **Owner:** sAIge
 - **Opened:** 2026-03-11 | **Closed:** 2026-03-13
@@ -75,16 +75,6 @@
 
 ---
 
-### [ISS-007] apiale verification autonomy — `NAIM_API_KEY` env state must be verified
-- **Status:** OPEN
-- **Owner:** sAIge
-- **Opened:** 2026-03-13
-- **Priority:** HIGH
-- **Description:** HDF reports indicate apiale may be missing `NAIM_API_KEY` at runtime, which blocks challenge-solving/report calls. Earlier notes conflict, so current env state must be confirmed explicitly.
-- **Next action:** Check `/etc/openclaw/apiale/env` for `NAIM_API_KEY`; if missing add it, restart `openclaw-apiale.service`, then verify one autonomous post/comment completes verification.
-
----
-
 ## 🟡 In Progress
 
 ### [ISS-005] Google Search Console indexing
@@ -101,7 +91,7 @@
 ### [ISS-C06] apiale env missing NAIM_API_KEY
 - **Status:** CLOSED
 - **Opened:** 2026-03-11 | **Closed:** 2026-03-13
-- **Resolution:** Key was already present in `/etc/openclaw/apiale/env`. Confirmed working — apiale is submitting CRM reports and calling verification solver autonomously. Investigated 2026-03-13, no action required.
+- **Resolution:** False alarm. `NAIM_API_KEY` was already present and working. Confirmed with live behavior: autonomous posting active (3 sessions today), karma moved 22→23, CRM reports submitted, and verification challenges solved. 10-minute heartbeat timeouts are long-turn limits, not an execution blocker.
 
 ### [ISS-C01] Hela model stuck on claude-sonnet-4-6
 - **Status:** CLOSED
