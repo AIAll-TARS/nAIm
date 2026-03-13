@@ -21,6 +21,11 @@
 - naim-registry Moltbook account DROPPED (see decision log)
 - handoff.md date corrected (was stuck at 2026-03-05)
 
+### GTM note for next week (AIAll)
+- Keep promotion strategy and move from **free → freemium**.
+- Messaging anchor: objective data creates space for empathy in agent-to-human support.
+- Track under `pm/ISSUE_LOG.md` as `ISS-006`.
+
 ---
 
 ## sAIge Status Update — 2026-03-12

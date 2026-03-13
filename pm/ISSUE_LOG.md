@@ -75,6 +75,16 @@
 
 ---
 
+### [ISS-007] apiale verification autonomy — `NAIM_API_KEY` env state must be verified
+- **Status:** OPEN
+- **Owner:** sAIge
+- **Opened:** 2026-03-13
+- **Priority:** HIGH
+- **Description:** HDF reports indicate apiale may be missing `NAIM_API_KEY` at runtime, which blocks challenge-solving/report calls. Earlier notes conflict, so current env state must be confirmed explicitly.
+- **Next action:** Check `/etc/openclaw/apiale/env` for `NAIM_API_KEY`; if missing add it, restart `openclaw-apiale.service`, then verify one autonomous post/comment completes verification.
+
+---
+
 ## 🟡 In Progress
 
 ### [ISS-005] Google Search Console indexing
