@@ -78,6 +78,11 @@
 
 ## ✅ Closed Issues
 
+### [ISS-C06] apiale env missing NAIM_API_KEY
+- **Status:** CLOSED
+- **Opened:** 2026-03-11 | **Closed:** 2026-03-13
+- **Resolution:** Key was already present in `/etc/openclaw/apiale/env`. Confirmed working — apiale is submitting CRM reports and calling verification solver autonomously. Investigated 2026-03-13, no action required.
+
 ### [ISS-C01] Hela model stuck on claude-sonnet-4-6
 - **Status:** CLOSED
 - **Opened:** 2026-03-11 | **Closed:** 2026-03-11
