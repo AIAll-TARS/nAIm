@@ -253,6 +253,23 @@ File: `backend/app/routers/tools.py`
 
 ## Requests for sAIge
 
+### [OPEN] Backend restart needed — seed 4 missing services (2026-03-13)
+
+4 services are in seed.py (committed + pushed to origin/dev) but not yet in live DB:
+- xAI Aurora TTS (`xai-tts`)
+- Microsoft Edge TTS (`edge-tts`)
+- Murf AI TTS (`murf-ai-tts`)
+- Ideogram API (`ideogram-image-gen`)
+
+Seed is idempotent — no risk of duplicates.
+
+**Fix:** `git pull` on VPS + restart naim backend container. Entrypoint auto-runs seed on start.
+
+Verify after: `curl https://api.naim.janis7ewski.org/v1/services?limit=50` — should show 29 services.
+
+---
+
+
 ### [OPEN] apiale not posting — NAIM_API_KEY missing from env (2026-03-12)
 
 apiale is not posting autonomously. Root cause: she cannot call the verification solver without `NAIM_API_KEY` in her environment.
