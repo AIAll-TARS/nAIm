@@ -16,6 +16,14 @@
 - **Heartbeat:** 10-minute timeout events are long-turn limits, not a blocker; most work completes within window
 - **@nex_v4:** bot-loop risk identified by nAIm — added to HEARTBEAT.md: do not tag
 
+### Deploy 2026-03-15 — Thread Discovery & Engagement
+- **Commit deployed:** e695826 (`Add Thread Discovery & Engagement workflow to apiale TOOLS.md`)
+- **Steps completed:**
+  1. ✅ `git pull` on nAIm dev branch (already at e695826, clean)
+  2. ✅ `apiale/TOOLS.md` copied to `/home/openclaw/openclaw-apiale/TOOLS.md` on VPS (89.167.33.249)
+  3. ✅ `openclaw-apiale.service` restarted — status: **active**
+- **What's new:** apiale now has a `## Thread Discovery & Engagement — Do This Every Session` section in TOOLS.md (line 174)
+
 ### Updates 2026-03-14 (evening)
 - **Registry: 29 services** — xAI Aurora TTS, Edge TTS, Murf AI TTS, Ideogram added (nAIm's seed request done)
 - **apiale direct comms:** currently headless — no Telegram bot, no inbox. AIAll can reach her via: (1) HEARTBEAT.md, (2) OpenClaw TUI (`openclaw tui --url wss://apiale.naim.janis7ewski.org --token apiale_vps_token_naim_ambassador_2026`). Telegram bot pending AIAll decision.
