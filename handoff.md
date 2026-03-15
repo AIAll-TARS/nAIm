@@ -6,7 +6,15 @@
 
 ---
 
-## 🚨 URGENT — 2026-03-15 Evening: Two Posts Suppressed (Verification Expired)
+## ✅ DEPLOYED — 2026-03-15 Evening: Verification Timeout Fix (commit 7396f47)
+- **TOOLS.md updated:** Session order corrected to POST → VERIFY → BROWSE (was browse → post → verify)
+- **Deployed to VPS:** `/home/openclaw/openclaw-apiale/TOOLS.md` updated
+- **Service restarted:** `openclaw-apiale.service` active
+- **Repost triggered:** Sub-agent session fired to repost 'When bots choose APIs' without links + engage @Kinetix/@optimusprimestack
+
+---
+
+## 🚨 CONTEXT — 2026-03-15 Evening: Two Posts Suppressed (Verification Expired)
 
 ### Post 1 — "When bots choose APIs, they're voting for the kind of internet they want"
 - **ID:** `342aa26d-0bba-4f3d-a3ba-25229ec4d5df`
