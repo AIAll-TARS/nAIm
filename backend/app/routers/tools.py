@@ -1,11 +1,18 @@
 """
 Tools router — utility endpoints for agents.
 POST /v1/tools/solve-challenge — decodes and solves Moltbook verification math challenges.
+POST /v1/tools/post-and-verify — posts to Moltbook and solves the verification challenge atomically.
 """
 import re
+import os
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from typing import Optional
 from app.auth import require_api_key
+
+MOLTBOOK_BASE = "https://www.moltbook.com/api/v1"
+MOLTBOOK_API_KEY = os.getenv("MOLTBOOK_API_KEY", "")
 
 router = APIRouter(prefix="/v1/tools", tags=["tools"])
 
@@ -143,3 +150,95 @@ def solve_challenge(payload: ChallengeRequest):
         raise HTTPException(status_code=422, detail=str(e))
 
     return ChallengeResponse(answer=answer, operation=operation, numbers=numbers)
+
+
+# --- post-and-verify ---
+
+class PostAndVerifyRequest(BaseModel):
+    submolt_name: str
+    title: str
+    content: Optional[str] = None
+
+
+class PostAndVerifyResponse(BaseModel):
+    success: bool
+    post_id: Optional[str] = None
+    verification_status: str
+    detail: Optional[str] = None
+
+
+@router.post("/post-and-verify", response_model=PostAndVerifyResponse,
+             dependencies=[Depends(require_api_key)])
+def post_and_verify(payload: PostAndVerifyRequest):
+    """
+    Atomically post to Moltbook and solve the verification challenge.
+    Eliminates the 5-minute window problem by doing POST → solve → verify in one call.
+    """
+    if not MOLTBOOK_API_KEY:
+        raise HTTPException(status_code=500, detail="MOLTBOOK_API_KEY not configured")
+
+    headers = {
+        "Authorization": f"Bearer {MOLTBOOK_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    # Step 1 — create the post
+    post_body = {"submolt_name": payload.submolt_name, "title": payload.title}
+    if payload.content:
+        post_body["content"] = payload.content
+
+    with httpx.Client(timeout=15) as client:
+        post_resp = client.post(f"{MOLTBOOK_BASE}/posts", json=post_body, headers=headers)
+
+    if post_resp.status_code not in (200, 201):
+        raise HTTPException(
+            status_code=502,
+            detail=f"Moltbook post failed: {post_resp.status_code} {post_resp.text[:200]}"
+        )
+
+    post_data = post_resp.json()
+    post_id = post_data.get("id")
+    verification = post_data.get("verification", {})
+    verification_code = verification.get("verification_code")
+    challenge_text = verification.get("challenge_text")
+
+    if not verification_code or not challenge_text:
+        return PostAndVerifyResponse(
+            success=True,
+            post_id=post_id,
+            verification_status="no_challenge",
+            detail="Post created but no verification challenge returned",
+        )
+
+    # Step 2 — solve the challenge
+    try:
+        answer, _, _ = solve(challenge_text)
+    except ValueError as e:
+        return PostAndVerifyResponse(
+            success=False,
+            post_id=post_id,
+            verification_status="solve_failed",
+            detail=f"Post created but challenge solve failed: {e}",
+        )
+
+    # Step 3 — submit the answer
+    with httpx.Client(timeout=15) as client:
+        verify_resp = client.post(
+            f"{MOLTBOOK_BASE}/verify",
+            json={"verification_code": verification_code, "answer": answer},
+            headers=headers,
+        )
+
+    if verify_resp.status_code in (200, 201):
+        return PostAndVerifyResponse(
+            success=True,
+            post_id=post_id,
+            verification_status="verified",
+        )
+    else:
+        return PostAndVerifyResponse(
+            success=False,
+            post_id=post_id,
+            verification_status="verify_failed",
+            detail=f"Verify call failed: {verify_resp.status_code} {verify_resp.text[:200]}",
+        )
