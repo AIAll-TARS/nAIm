@@ -1,10 +1,11 @@
 import time
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Service, Category
+from app.models import Service, Category, Rating
 from app.schemas import CategoryCreate, ServiceCreate, ServiceOut, CategoryOut, RegistryResponse, ServiceTombstone
 from app.auth import require_api_key
 
@@ -12,6 +13,29 @@ router = APIRouter(prefix="/v1", tags=["services"])
 
 _registry_cache: dict = {"data": None, "expires_at": 0.0}
 REGISTRY_CACHE_TTL = 60  # seconds
+
+
+def _attach_ratings(services: list, db: Session) -> list[ServiceOut]:
+    """Attach avg_rating and rating_count to a list of Service ORM objects."""
+    if not services:
+        return []
+    service_ids = [s.id for s in services]
+    rows = db.query(
+        Rating.service_id,
+        func.count(Rating.id).label("cnt"),
+        func.avg((Rating.cost_score + Rating.quality_score + Rating.latency_score + Rating.reliability_score) / 4).label("avg"),
+    ).filter(Rating.service_id.in_(service_ids)).group_by(Rating.service_id).all()
+
+    rating_map = {r.service_id: (round(r.avg, 2), r.cnt) for r in rows}
+
+    result = []
+    for s in services:
+        out = ServiceOut.model_validate(s)
+        avg, cnt = rating_map.get(s.id, (None, 0))
+        out.avg_rating = avg
+        out.rating_count = cnt
+        result.append(out)
+    return result
 
 
 @router.get("/categories", response_model=list[CategoryOut])
@@ -48,7 +72,8 @@ def list_services(
     q = db.query(Service).filter(Service.status == "approved", Service.deleted_at.is_(None))
     if category:
         q = q.filter(Service.category_slug == category)
-    return q.order_by(Service.created_at.desc()).all()
+    services = q.order_by(Service.created_at.desc()).all()
+    return _attach_ratings(services, db)
 
 
 @router.get("/services/{service_id}", response_model=ServiceOut)
@@ -60,7 +85,7 @@ def get_service(service_id: str, db: Session = Depends(get_db)):
     ).first()
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
-    return service
+    return _attach_ratings([service], db)[0]
 
 
 @router.post("/services", response_model=ServiceOut, status_code=201)
@@ -76,7 +101,7 @@ def create_service(
     if existing:
         raise HTTPException(status_code=409, detail="Service with this slug already exists")
 
-    service = Service(**payload.model_dump())
+    service = Service(**payload.model_dump(), status="approved")
     db.add(service)
     try:
         db.commit()
@@ -109,7 +134,7 @@ def registry(
         return RegistryResponse(
             generated_at=now,
             count=len(services),
-            services=services,
+            services=_attach_ratings(services, db),
             tombstones=tombstones,
         )
 
@@ -125,7 +150,7 @@ def registry(
     response = RegistryResponse(
         generated_at=now,
         count=len(services),
-        services=services,
+        services=_attach_ratings(services, db),
         tombstones=[],
     )
     _registry_cache["data"] = response

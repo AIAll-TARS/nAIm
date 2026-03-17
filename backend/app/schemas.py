@@ -61,6 +61,8 @@ class ServiceOut(BaseModel):
     pricing_notes: str | None
     status: str
     verified: bool
+    avg_rating: float | None = None
+    rating_count: int = 0
     created_at: datetime
     updated_at: datetime
 
