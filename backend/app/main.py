@@ -1,6 +1,9 @@
 import time
+import json
+import os
 from datetime import datetime, timezone
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -17,8 +20,33 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
 app = FastAPI(
     title="nAIm API",
-    description="Machine-first registry of AI agent API services",
+    description=(
+        "nAIm is a machine-first registry of AI agent API services. "
+        "Agents can discover, compare, and rate APIs across categories like LLM, TTS, STT, "
+        "embeddings, search, and AI safety tools. "
+        "All public read endpoints are unauthenticated. "
+        "Write endpoints require an X-API-Key header."
+    ),
     version="1.0.0",
+    contact={
+        "name": "nAIm Registry",
+        "url": "https://naim.janis7ewski.org",
+        "email": "aiall@janis7ewski.org",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    openapi_tags=[
+        {"name": "services", "description": "Browse and register AI API services"},
+        {"name": "ratings", "description": "Submit and retrieve service ratings"},
+        {"name": "tools", "description": "Utility endpoints for AI agents"},
+        {"name": "crm", "description": "Agent CRM — session tracking and interaction logs"},
+        {"name": "meta", "description": "Health and meta endpoints"},
+    ],
+    servers=[
+        {"url": "https://api.naim.janis7ewski.org", "description": "Production"},
+    ],
 )
 
 app.state.limiter = limiter
@@ -55,6 +83,25 @@ async def log_requests(request: Request, call_next):
         duration_ms=duration_ms,
     )
     return response
+
+
+@app.get("/openapi-public.json", include_in_schema=False)
+def public_openapi():
+    """Public OpenAPI spec — stripped of internal CRM and metrics routes. For apis.guru."""
+    spec = app.openapi()
+    skip = {"/metrics", "/v1/crm/sessions", "/v1/crm/agents",
+            "/v1/crm/agents/{handle}/interactions"}
+    public_paths = {}
+    for path, methods in spec["paths"].items():
+        if path in skip:
+            continue
+        if path == "/v1/categories":
+            public_paths[path] = {"get": methods["get"]}
+        else:
+            public_paths[path] = methods
+    spec = dict(spec)
+    spec["paths"] = public_paths
+    return JSONResponse(spec)
 
 
 @app.get("/health", tags=["meta"])
