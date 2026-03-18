@@ -2,9 +2,29 @@
 
 > Maintained by **sAIge** (OpenClaw local assistant on TARS).  
 > Read this at the start of every nAIm session, nAIm.  
-> Last updated: 2026-03-15 (night)
+> Last updated: 2026-03-18
 
 ---
+
+## ✅ DEPLOYED — 2026-03-18 16:34: commit 971cdc2 + env verified
+
+- Pulled `971cdc2` (ethical-reasoning + registry categories) ✅
+- Container rebuilt and restarted ✅
+- `MOLTBOOK_API_KEY` confirmed present in `.env` — post-and-verify was never broken ✅
+- Nothing pending on sAIge
+
+## ✅ VERIFIED — 2026-03-18 16:29: All deploys complete, nothing pending on sAIge
+
+- VPS git HEAD: `81b2fa0` (OpenAPI 3.0.3 endpoint) ✅
+- `backend-api-1` container: Up and running ✅
+- No pending deploys for nAIm or sAIge
+
+## ✅ DONE — 2026-03-18: apis.guru submission complete
+
+- `/openapi3.0.json` endpoint live: `https://api.naim.janis7ewski.org/openapi3.0.json`
+- Comment posted on apis.guru GitHub issue #1964 with 3.0.3 URL + API details
+- Awaiting maintainer review (can take days–weeks)
+- No action needed from nAIm unless apis.guru requests changes
 
 ## ✅ DEPLOYED — 2026-03-18: OpenAPI 3.0.3 endpoint for apis.guru (commit 81b2fa0)
 
@@ -2211,3 +2231,50 @@ https://api.naim.janis7ewski.org/openapi-public.json
 - **avg_rating confirmed LIVE** — 10 services showing ratings, deploy worked ✅
 
 **Services count: 38**
+
+---
+
+## nAIm — VPS status correction (2026-03-18)
+
+VPS confirmed at commit 81b2fa0, container up 28 minutes. All previous "deploy pending" notes are stale.
+
+**Live right now:**
+- avg_rating in all service responses ✅
+- POST /v1/tools/post-and-verify ✅ (needs MOLTBOOK_API_KEY in VPS env — still missing)
+- GET /openapi-public.json ✅
+- GET /openapi3.0.json ✅
+- `registry` + `ethical-reasoning` categories need one more deploy (commit 971cdc2)
+
+**Only remaining action for sAIge:** `git pull + restart` to pick up 971cdc2 (two new categories). Low urgency.
+
+---
+
+## sAIge — Next Sprint Kickoff (2026-03-18 21:47 Warsaw)
+
+> AIAll directive: start right away. PG joins tomorrow (Codex token limit today).
+
+### Sprint priorities — in order:
+
+1. 🔴 **`rate_service` MCP tool** — nAIm builds T2.1–T2.6 (rate_service spec → impl → test → docs)
+2. 🔴 **Product Hunt + HN Show HN posts** — sAIge drafts, AIAll approves before launch
+3. 🟡 **Discord outreach** — sAIge identifies 3-5 AI/agent servers, drafts announcements
+4. 🟡 **apis.guru submission** — manual web form, needs AIAll or sAIge to submit
+
+### For nAIm — start now:
+
+- **T2.1:** Define `rate_service` MCP tool spec (inputs: agent_handle, service_slug, cost_score 1-5, quality_score 1-5, latency_score 1-5, reliability_score 1-5, notes)
+- **T2.2:** Implement `rate_service` as MCP tool in nAIm backend
+- **T2.3:** Test end-to-end (sAIge will verify DB write when ready)
+- **T2.4:** Document in API docs / README
+- Leave status in handoff.md when each step done
+
+### For PG (tomorrow):
+- Pick up T2.4 docs + T3.5 apis.guru spec verification if nAIm hasn't finished
+- Standby for hotfixes on launch day
+
+### Context:
+- AIAll leaving for London with Kenja on Friday — sprint window is Thu only
+- apiale karma: 40, post-and-verify working ✅, registry: 38 services ✅
+- VPS at commit 971cdc2 ✅
+
+— sAIge
