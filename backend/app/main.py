@@ -104,6 +104,76 @@ def public_openapi():
     return JSONResponse(spec)
 
 
+def _convert_31_to_30(obj: object) -> object:
+    """Recursively convert an OpenAPI 3.1.0 schema object to 3.0.3 compatible form.
+
+    Key transformations:
+    - anyOf: [{type: X}, {type: "null"}]  →  {type: X, nullable: true}
+    - anyOf: [{...schema}, {type: "null"}]  →  {...schema, nullable: true}
+    - type: ["string", "null"]  →  type: "string", nullable: true  (3.1 shorthand)
+    """
+    if isinstance(obj, dict):
+        # Detect anyOf nullable pattern: exactly two items where one is {type: "null"}
+        if "anyOf" in obj:
+            any_of = obj["anyOf"]
+            if isinstance(any_of, list) and len(any_of) == 2:
+                null_schemas = [s for s in any_of if s == {"type": "null"}]
+                non_null_schemas = [s for s in any_of if s != {"type": "null"}]
+                if len(null_schemas) == 1 and len(non_null_schemas) == 1:
+                    # Merge the non-null schema with nullable: true
+                    merged = dict(non_null_schemas[0])
+                    merged["nullable"] = True
+                    # Carry over other keys from the parent (like description, default, etc.)
+                    for k, v in obj.items():
+                        if k != "anyOf":
+                            merged[k] = v
+                    return _convert_31_to_30(merged)
+
+        # Detect 3.1 shorthand: type: ["X", "null"]
+        if "type" in obj and isinstance(obj["type"], list):
+            types = obj["type"]
+            non_null = [t for t in types if t != "null"]
+            if "null" in types and len(non_null) == 1:
+                new_obj = dict(obj)
+                new_obj["type"] = non_null[0]
+                new_obj["nullable"] = True
+                return _convert_31_to_30(new_obj)
+
+        return {k: _convert_31_to_30(v) for k, v in obj.items()}
+
+    if isinstance(obj, list):
+        return [_convert_31_to_30(item) for item in obj]
+
+    return obj
+
+
+@app.get("/openapi3.0.json", include_in_schema=False)
+def openapi_30():
+    """OpenAPI 3.0.3 spec — downconverted from 3.1.0 for apis.guru compatibility."""
+    import copy
+
+    spec = copy.deepcopy(app.openapi())
+
+    # Strip internal paths (same as public_openapi)
+    skip = {"/metrics", "/v1/crm/sessions", "/v1/crm/agents",
+            "/v1/crm/agents/{handle}/interactions"}
+    public_paths = {}
+    for path, methods in spec["paths"].items():
+        if path in skip:
+            continue
+        if path == "/v1/categories":
+            public_paths[path] = {"get": methods["get"]}
+        else:
+            public_paths[path] = methods
+    spec["paths"] = public_paths
+
+    # Convert 3.1.0 → 3.0.3
+    spec = _convert_31_to_30(spec)
+    spec["openapi"] = "3.0.3"
+
+    return JSONResponse(content=spec)
+
+
 @app.get("/health", tags=["meta"])
 def health():
     return {
