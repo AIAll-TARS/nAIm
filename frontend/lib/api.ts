@@ -23,6 +23,8 @@ export interface Service {
   pricing_notes: string | null;
   status: string;
   verified: boolean;
+  avg_rating: number | null;
+  rating_count: number;
   created_at: string;
   updated_at: string;
 }
@@ -58,3 +60,6 @@ export const submitRating = (serviceId: string, payload: {
   agent_id?: string;
   notes?: string;
 }) => api.post(`/v1/services/${serviceId}/ratings`, payload).then((r) => r.data);
+
+export const pingPresence = () =>
+  api.get<{ active: number }>("/v1/tools/presence").then((r) => r.data.active);

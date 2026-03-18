@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getCategories, getServices, Service, Category } from "@/lib/api";
+import { getCategories, getServices, pingPresence, Service, Category } from "@/lib/api";
 import ServiceCard from "@/components/ServiceCard";
 
 export default function Home() {
@@ -9,6 +9,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string | undefined>();
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [activeVisitors, setActiveVisitors] = useState<number | null>(null);
 
   useEffect(() => {
     getCategories().then(setCategories);
@@ -20,6 +21,14 @@ export default function Home() {
       .then(setServices)
       .finally(() => setLoading(false));
   }, [activeCategory]);
+
+  useEffect(() => {
+    pingPresence().then(setActiveVisitors).catch(() => {});
+    const interval = setInterval(() => {
+      pingPresence().then(setActiveVisitors).catch(() => {});
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const filtered = services.filter(
     (s) =>
@@ -36,13 +45,21 @@ export default function Home() {
             <h1 className="text-2xl font-bold tracking-tight">nAIm</h1>
             <p className="text-sm text-gray-400 mt-0.5">API service registry for AI agents</p>
           </div>
-          <a
-            href="https://github.com/AIAll-TARS/nAIm"
-            target="_blank"
-            className="text-xs text-gray-500 hover:text-gray-300 transition"
-          >
-            GitHub
-          </a>
+          <div className="flex items-center gap-4">
+            {activeVisitors !== null && (
+              <span className="text-xs text-gray-500 flex items-center gap-1.5">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                {activeVisitors} browsing now
+              </span>
+            )}
+            <a
+              href="https://github.com/AIAll-TARS/nAIm"
+              target="_blank"
+              className="text-xs text-gray-500 hover:text-gray-300 transition"
+            >
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
 

@@ -2,14 +2,26 @@
 Tools router — utility endpoints for agents.
 POST /v1/tools/solve-challenge — decodes and solves Moltbook verification math challenges.
 POST /v1/tools/post-and-verify — posts to Moltbook and solves the verification challenge atomically.
+GET  /v1/presence — live visitor count (ping to register, returns active count).
 """
 import re
 import os
+import time
 import httpx
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from typing import Optional
 from app.auth import require_api_key
+
+# --- Presence tracker (in-memory, TTL 90s) ---
+_presence: dict[str, float] = {}  # visitor_id -> last_seen
+PRESENCE_TTL = 90  # seconds
+
+
+def _presence_count() -> int:
+    now = time.time()
+    cutoff = now - PRESENCE_TTL
+    return sum(1 for t in _presence.values() if t > cutoff)
 
 MOLTBOOK_BASE = "https://www.moltbook.com/api/v1"
 MOLTBOOK_API_KEY = os.getenv("MOLTBOOK_API_KEY", "")
@@ -242,3 +254,24 @@ def post_and_verify(payload: PostAndVerifyRequest):
             verification_status="verify_failed",
             detail=f"Verify call failed: {verify_resp.status_code} {verify_resp.text[:200]}",
         )
+
+
+# --- Presence ---
+
+@router.get("/presence")
+def get_presence(request: Request):
+    """
+    Ping to register as active visitor. Returns count of active visitors in last 90s.
+    Call on page load and every 60s to stay counted.
+    """
+    now = time.time()
+    visitor_id = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0].strip()
+    _presence[visitor_id] = now
+
+    # Prune old entries
+    cutoff = now - PRESENCE_TTL
+    stale = [k for k, v in _presence.items() if v <= cutoff]
+    for k in stale:
+        del _presence[k]
+
+    return {"active": _presence_count()}

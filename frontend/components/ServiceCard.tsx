@@ -55,6 +55,14 @@ export default function ServiceCard({ service }: { service: Service }) {
               {service.pricing_model.replace("_", " ")}
             </p>
             <p className="text-xs text-gray-600 mt-1 capitalize">{service.auth_type.replace("_", " ")}</p>
+            {service.avg_rating != null ? (
+              <p className="text-xs text-yellow-400 mt-1.5 font-medium">
+                ★ {service.avg_rating.toFixed(1)}
+                <span className="text-gray-600 font-normal"> ({service.rating_count})</span>
+              </p>
+            ) : (
+              <p className="text-xs text-gray-700 mt-1.5">no ratings</p>
+            )}
           </div>
         </div>
       </div>
