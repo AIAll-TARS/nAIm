@@ -117,6 +117,37 @@ async def list_tools() -> list[Tool]:
                 "required": ["service_id", "cost_score", "quality_score", "latency_score", "reliability_score"],
             },
         ),
+        Tool(
+            name="rate_service",
+            description=(
+                "Rate an API service by its slug (e.g. 'groq-llm', 'elevenlabs-tts'). "
+                "Easier to use than submit_rating — no UUID needed. "
+                "Use search_services first to find the slug if unsure. "
+                "All scores are 1 (worst) to 5 (best)."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "service_slug": {
+                        "type": "string",
+                        "description": "The service slug, e.g. 'groq-llm', 'elevenlabs-tts', 'deepgram-stt'.",
+                    },
+                    "cost_score": {"type": "number", "description": "Cost value 1-5. 5 = very cheap / great value."},
+                    "quality_score": {"type": "number", "description": "Output quality 1-5. 5 = excellent."},
+                    "latency_score": {"type": "number", "description": "Response speed 1-5. 5 = very fast."},
+                    "reliability_score": {"type": "number", "description": "Uptime and stability 1-5. 5 = rock solid."},
+                    "agent_handle": {
+                        "type": "string",
+                        "description": "Your agent handle or identifier, e.g. '@myagent'. Optional but encouraged.",
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Free-text notes — specific failure modes, use case context, observations. Optional.",
+                    },
+                },
+                "required": ["service_slug", "cost_score", "quality_score", "latency_score", "reliability_score"],
+            },
+        ),
     ]
 
 
@@ -148,10 +179,12 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
             lines = []
             for s in data:
+                rating_str = f"{s['avg_rating']:.1f}/5 ({s['rating_count']} ratings)" if s.get("avg_rating") else "no ratings yet"
                 lines.append(
-                    f"ID: {s['id']}\n"
+                    f"Slug: {s['slug']}\n"
                     f"  Name: {s['name']} ({s['canonical_provider']})\n"
                     f"  Category: {s['category_slug']}\n"
+                    f"  Rating: {rating_str}\n"
                     f"  Pricing: {s['pricing_model']} — {s.get('pricing_notes', 'N/A')}\n"
                     f"  Auth: {s['auth_type']}\n"
                     f"  Description: {s['description']}"
@@ -186,6 +219,44 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
                 f"  Cost:        {r['avg_cost']}/5"
             )
             return [TextContent(type="text", text=text)]
+
+        elif name == "rate_service":
+            # Look up service by slug
+            all_services = await _get("/v1/services")
+            slug = arguments["service_slug"].lower().strip()
+            match = next((s for s in all_services if s["slug"] == slug), None)
+            if not match:
+                close = [s["slug"] for s in all_services if slug in s["slug"] or s["slug"] in slug]
+                hint = f" Did you mean: {', '.join(close[:3])}?" if close else ""
+                return [TextContent(type="text", text=f"Service '{slug}' not found.{hint}")]
+
+            payload = {
+                "cost_score": arguments["cost_score"],
+                "quality_score": arguments["quality_score"],
+                "latency_score": arguments["latency_score"],
+                "reliability_score": arguments["reliability_score"],
+                "agent_id": arguments.get("agent_handle"),
+                "notes": arguments.get("notes"),
+            }
+            async with httpx.AsyncClient(base_url=API_BASE, timeout=10) as client:
+                r = await client.post(f"/v1/services/{match['id']}/ratings", json=payload)
+                if r.status_code == 409:
+                    return [TextContent(type="text", text=f"You have already rated '{slug}'.")]
+                r.raise_for_status()
+
+            avg = match.get("avg_rating")
+            avg_str = f" (registry avg: {avg:.1f}/5)" if avg else ""
+            return [TextContent(
+                type="text",
+                text=(
+                    f"Rating submitted for {match['name']}{avg_str}.\n"
+                    f"  Cost: {arguments['cost_score']}/5\n"
+                    f"  Quality: {arguments['quality_score']}/5\n"
+                    f"  Latency: {arguments['latency_score']}/5\n"
+                    f"  Reliability: {arguments['reliability_score']}/5"
+                    + (f"\n  Notes: {arguments['notes']}" if arguments.get("notes") else "")
+                ),
+            )]
 
         elif name == "submit_rating":
             async with httpx.AsyncClient(base_url=API_BASE, timeout=10) as client:
