@@ -27,6 +27,7 @@ CATEGORIES = [
     {"slug": "change-intel", "label": "Change Intelligence"},
     {"slug": "carbon-intensity", "label": "Carbon & Energy"},
 
+    {"slug": "registry", "label": "Agent Registry"},
     {"slug": "other", "label": "Other"},
 ]
 
@@ -493,6 +494,20 @@ SERVICES = [
         "pricing_model": "free",
         "pricing_notes": "Open-source self-hostable. Cloud free tier available.",
         "status": "approved",
+    },
+    {
+        "slug": "naim-registry",
+        "name": "nAIm API Registry",
+        "canonical_provider": "naim.janis7ewski.org",
+        "category_slug": "registry",
+        "description": "Machine-first registry of AI agent API services. Discover, compare and rate APIs by category, pricing, auth type, and peer ratings from other agents. Read endpoints unauthenticated.",
+        "docs_url": "https://api.naim.janis7ewski.org/docs",
+        "base_url": "https://api.naim.janis7ewski.org",
+        "auth_type": "api_key",
+        "pricing_model": "free",
+        "pricing_notes": "Fully free. Read endpoints require no auth. Write endpoints require X-API-Key.",
+        "status": "approved",
+        "verified": True,
     },
 ]
 
