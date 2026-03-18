@@ -21,6 +21,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   "agent-observability": "Observability",
   "change-intel": "Change Intel",
   "carbon-intensity": "Carbon/Energy",
+  "ethical-reasoning": "Ethical Reasoning",
   registry: "Agent Registry",
   other: "Other",
 };

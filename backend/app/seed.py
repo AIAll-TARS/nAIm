@@ -27,6 +27,7 @@ CATEGORIES = [
     {"slug": "change-intel", "label": "Change Intelligence"},
     {"slug": "carbon-intensity", "label": "Carbon & Energy"},
 
+    {"slug": "ethical-reasoning", "label": "Ethical Reasoning"},
     {"slug": "registry", "label": "Agent Registry"},
     {"slug": "other", "label": "Other"},
 ]
