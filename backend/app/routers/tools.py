@@ -70,33 +70,46 @@ PATTERNS = [(word, make_fuzzy(word)) for word in ORDERED_WORDS]
 
 
 def extract_numbers(text: str) -> list[float]:
-    """Find all number words in scrambled text using fuzzy matching."""
-    remaining = text
-    numbers = []
-    positions = []
+    """Find all numbers (digits or words) in text, returning them in order of appearance."""
+    found: list[tuple[int, float]] = []  # (position, value)
+    occupied: list[tuple[int, int]] = []  # (start, end) ranges already claimed
 
+    def overlaps(start: int, end: int) -> bool:
+        return any(s <= start < e or s < end <= e for s, e in occupied)
+
+    # 1. Extract digit-based numbers first (integers and decimals, including negatives)
+    for m in re.finditer(r"-?\d+(?:\.\d+)?", text):
+        start, end = m.start(), m.end()
+        if not overlaps(start, end):
+            occupied.append((start, end))
+            found.append((start, float(m.group())))
+
+    # 2. Extract word-based numbers (only where no digit was found)
     for word, pattern in PATTERNS:
-        for m in pattern.finditer(remaining):
+        for m in pattern.finditer(text):
             start, end = m.start(), m.end()
-            # skip if overlaps with already-found number
-            if any(s <= start < e or s < end <= e for s, e in positions):
-                continue
-            positions.append((start, end))
-            numbers.append((start, float(NUMBER_WORDS[word])))
+            if not overlaps(start, end):
+                occupied.append((start, end))
+                found.append((start, float(NUMBER_WORDS[word])))
 
-    numbers.sort(key=lambda x: x[0])
-    return [v for _, v in numbers]
+    found.sort(key=lambda x: x[0])
+    return [v for _, v in found]
 
 
 def detect_operation(text: str) -> str:
     """Infer math operation from key words in challenge."""
+    lower = text.lower()
+
+    divide_words = ["divided by", "divide", "÷", "over", "split by", "quotient"]
+    multiply_words = ["times", "multiplied", "multiply", "×", "product",
+                      "during", "dominance", "per second times", "rate"]
     subtract_words = ["slow", "lose", "los", "remaining", "minus", "less",
                       "reduced", "decrease", "removed", "subtract", "new velocity",
-                      "new speed", "new force"]
-    multiply_words = ["times", "multiplied", "multiply", "product",
-                      "during", "dominance", "per second times", "rate"]
+                      "new speed", "new force", " - "]
 
-    lower = text.lower()
+    for w in divide_words:
+        if w in lower:
+            return "divide"
     for w in multiply_words:
         if w in lower:
             return "multiply"
@@ -123,12 +136,15 @@ def solve(challenge_text: str) -> tuple[str, str, list[float]]:
     else:
         a, b = numbers[0], numbers[1]
 
-    if operation == "subtract":
+    if operation == "divide":
+        if b == 0:
+            raise ValueError("Division by zero in challenge")
+        result = a / b
+    elif operation == "subtract":
         # Special case: "total speed of two lobsters where second slows"
         # e.g. lobster1=25, slows by 7 → total = 25 + (25-7) = 43
         if "total" in challenge_text.lower():
             result = a + (a - b)
-            # But if subtract gives negative or the numbers suggest simple sub, use simple
             if result <= 0 or b >= a:
                 result = a - b
         else:
@@ -138,6 +154,9 @@ def solve(challenge_text: str) -> tuple[str, str, list[float]]:
     else:
         result = a + b
 
+    # Return integer string if result is whole number, otherwise 2dp
+    if result == int(result):
+        return str(int(result)), operation, numbers
     return f"{result:.2f}", operation, numbers
 
 
