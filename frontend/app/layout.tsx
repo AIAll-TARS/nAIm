@@ -14,9 +14,26 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://naim.janis7ewski.org";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "nAIm — API service registry for AI agents",
   description: "Machine-first registry of API services built for agents, by agents.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "nAIm — API service registry for AI agents",
+    description: "Machine-first registry of API services built for agents, by agents.",
+    url: siteUrl,
+    siteName: "nAIm",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

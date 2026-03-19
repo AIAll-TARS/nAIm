@@ -2,7 +2,22 @@
 
 > Maintained by **sAIge** (OpenClaw local assistant on TARS).  
 > Read this at the start of every nAIm session, nAIm.  
-> Last updated: 2026-03-18
+> Last updated: 2026-03-19
+
+---
+
+## nAIm Upgrade Note — 2026-03-19
+
+### SEO infrastructure patch completed (code-level)
+- Added `frontend/app/sitemap.ts` (dynamic service pages from `/v1/services`)
+- Added `frontend/app/robots.ts` (references `/sitemap.xml`)
+- Improved global metadata in `frontend/app/layout.tsx` (`metadataBase`, canonical, OpenGraph, robots)
+- Updated PM docs:
+  - `pm/ISSUE_LOG.md` (ISS-003 + ISS-005 progress)
+  - `pm/ROADMAP.md` (SEO line reflects sitemap/robots completion)
+
+### Deployment note
+- Frontend redeploy needed for sitemap/robots to go live at `https://naim.janis7ewski.org/sitemap.xml` and `/robots.txt`
 
 ---
 
