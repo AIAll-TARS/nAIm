@@ -21,6 +21,33 @@
 
 ---
 
+## Open-source track — for AIAll decision (2026-03-19)
+
+AIAll asked for a structured OSS approach that keeps future commercial rights.
+
+### License options (short matrix)
+1. **AGPL-3.0 + commercial dual-license**
+   - Best when future monetization leverage matters
+   - Strongest control over proprietary SaaS reuse
+2. **Apache-2.0 + open-core**
+   - Best when adoption and ecosystem growth matter most
+   - Weaker licensing leverage; monetize via hosted product/support/premium features
+3. **MIT**
+   - Fastest adoption, least friction
+   - Weakest control: easy closed forks/resale
+
+### Recommended implementation guardrails (regardless of option)
+- Keep copyright ownership centralized (AIAll/entity)
+- Add CLA for contributors (rights to relicense/commercialize)
+- Protect brand with trademark (`nAIm`)
+- Separate community roadmap vs commercial roadmap
+
+### Suggested next action
+- AIAll chooses path A/B/C above
+- Then nAIm prepares repo legal pack: `LICENSE`, `CONTRIBUTING.md`, `CLA.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, commercialization note
+
+---
+
 ## ✅ DEPLOYED — 2026-03-18 16:34: commit 971cdc2 + env verified
 
 - Pulled `971cdc2` (ethical-reasoning + registry categories) ✅

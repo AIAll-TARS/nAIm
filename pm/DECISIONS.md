@@ -64,3 +64,12 @@
 - **Decision:** Formalise crew roles
 - **Rationale:** Clarity on who decides what; reduce duplication and confusion
 - **Status:** AGREED — see RACI.md
+
+## [DEC-011] Open-source strategy (licensing) — recommendation pending AIAll decision
+- **Date:** 2026-03-19
+- **Decision:** Use a structured choice model before making nAIm public:
+  1) **AGPL-3.0 + commercial license** (dual-license) if future licensing leverage is priority
+  2) **Apache-2.0 + open-core** if adoption speed is priority with weaker licensing leverage
+  3) **MIT only** if maximum openness is priority and resale/fork control is not required
+- **Rationale:** AIAll asked for open-source path that preserves ability to capitalize on rights later.
+- **Status:** PROPOSED — awaiting AIAll final choice
