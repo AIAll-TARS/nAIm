@@ -33,7 +33,7 @@ apis.guru accepts submissions via GitHub PR to their `APIs.guru/openapi-director
    - Category: AI / Machine Learning
    - Description: Machine-first registry of AI agent API services (LLM, TTS, STT, embeddings, search, safety tools)
    - Spec URL: https://api.naim.janis7ewski.org/openapi-public.json
-   - License: MIT
+   - License: AGPL-3.0
    ```
 
 ## Alternative: web form

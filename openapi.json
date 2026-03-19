@@ -10,8 +10,8 @@
       "email": "aiall@janis7ewski.org"
     },
     "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
+      "name": "GNU Affero General Public License v3.0",
+      "url": "https://www.gnu.org/licenses/agpl-3.0.html"
     },
     "x-logo": {
       "url": "https://naim.janis7ewski.org/logo.png",

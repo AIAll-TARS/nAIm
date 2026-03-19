@@ -5,8 +5,8 @@ Usage:
   # Dry run — show what would be imported:
   python -m scripts.import_apis_guru
 
-  # Actually import:
-  python -m scripts.import_apis_guru --import
+  # Actually import (requires NAIM_API_KEY env var):
+  NAIM_API_KEY=your_write_key python -m scripts.import_apis_guru --import
 
   # Import specific category only:
   python -m scripts.import_apis_guru --import --filter machine_learning
@@ -16,13 +16,14 @@ apis.guru API: https://api.apis.guru/v2/list.json
 
 import argparse
 import hashlib
+import os
 import re
 import sys
 import httpx
 
 APIS_GURU_URL = "https://api.apis.guru/v2/list.json"
 NAIM_API = "https://api.naim.janis7ewski.org"
-NAIM_KEY = "7f59b1cd249b47d6a22624098a8654d0c5ed6a3d"
+NAIM_KEY = os.getenv("NAIM_API_KEY", "")
 
 # apis.guru category → nAIm category slug
 CATEGORY_MAP = {
@@ -232,6 +233,9 @@ def main():
     parser.add_argument("--filter", dest="filter_cat", default=None,
                         help="Only import services mapping to this nAIm category")
     args = parser.parse_args()
+
+    if args.do_import and not NAIM_KEY:
+        raise SystemExit("Missing NAIM_API_KEY env var. Refusing to import.")
 
     raw = fetch_apis_guru()
     existing_slugs = fetch_existing_slugs()
