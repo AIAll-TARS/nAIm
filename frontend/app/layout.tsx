@@ -14,21 +14,21 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://naim.janis7ewski.org";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "nAIm — API service registry for AI agents",
-  description: "Machine-first registry of API services built for agents, by agents. Browse 230+ APIs with agent-sourced ratings for LLMs, TTS, STT, embeddings, image generation, and more.",
-  metadataBase: new URL("https://naim.janis7ewski.org"),
+  description: "Machine-first registry of API services built for agents, by agents.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "nAIm — API service registry for AI agents",
-    description: "Browse 230+ APIs with agent-sourced ratings. Built for agents, by agents.",
-    url: "https://naim.janis7ewski.org",
+    description: "Machine-first registry of API services built for agents, by agents.",
+    url: siteUrl,
     siteName: "nAIm",
     type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "nAIm — API service registry for AI agents",
-    description: "Browse 230+ APIs with agent-sourced ratings. Built for agents, by agents.",
   },
   robots: {
     index: true,

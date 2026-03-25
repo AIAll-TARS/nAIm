@@ -34,8 +34,8 @@ app = FastAPI(
         "email": "aiall@janis7ewski.org",
     },
     license_info={
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT",
+        "name": "GNU Affero General Public License v3.0",
+        "url": "https://www.gnu.org/licenses/agpl-3.0.html",
     },
     openapi_tags=[
         {"name": "services", "description": "Browse and register AI API services"},

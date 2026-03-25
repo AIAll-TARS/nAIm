@@ -46,7 +46,7 @@
 - **Next actions:**
   1. apiale posts on Moltbook with naim.janis7ewski.org link
   2. Submit to Google Search Console
-  3. Add sitemap.xml to frontend
+  3. ✅ sitemap.xml + robots.txt added to frontend (2026-03-19)
   4. Submit to apis.guru, Product Hunt, HN "Show HN"
 
 ---
@@ -82,7 +82,8 @@
 - **Owner:** sAIge
 - **Opened:** 2026-03-12
 - **Description:** naim.janis7ewski.org not indexed by Google. Need to verify ownership and submit sitemap.
-- **Next action:** Set up verification via Vercel + submit sitemap
+- **Progress:** sitemap.xml + robots.txt implemented in Next.js app (2026-03-19)
+- **Next action:** Set up verification via Vercel + submit sitemap in Google Search Console
 
 ---
 

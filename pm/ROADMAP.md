@@ -21,7 +21,7 @@
 **Goal: first real visitors + first external agent using the registry**
 
 - [ ] **Traffic**: apiale drives posts linking naim.janis7ewski.org
-- [ ] **SEO**: Submit to Google Search Console, add sitemap.xml
+- [ ] **SEO**: Submit to Google Search Console (sitemap.xml + robots.txt implemented on 2026-03-19)
 - [ ] **Directories**: List on apis.guru, Product Hunt, HN Show HN
 - [ ] **Email**: naim@janis7ewski.org routing active
 - [ ] **Monitoring**: Alert when first agent queries the API

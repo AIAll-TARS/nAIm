@@ -2,8 +2,8 @@
 Import MCP servers from the official MCP registry into nAIm.
 
 Usage:
-  python3 -m scripts.import_mcp          # dry run
-  python3 -m scripts.import_mcp --import  # import
+  python3 -m scripts.import_mcp                           # dry run
+  NAIM_API_KEY=your_write_key python3 -m scripts.import_mcp --import  # import
 
 Sources:
   - https://registry.modelcontextprotocol.io/v0.1/api/v0/servers
@@ -11,13 +11,14 @@ Sources:
 """
 
 import argparse
+import os
 import re
 import httpx
 
 MCP_REGISTRY_URL = "https://registry.modelcontextprotocol.io/v0.1/api/v0/servers"
 MCP_README_URL = "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/README.md"
 NAIM_API = "https://api.naim.janis7ewski.org"
-NAIM_KEY = "7f59b1cd249b47d6a22624098a8654d0c5ed6a3d"
+NAIM_KEY = os.getenv("NAIM_API_KEY", "")
 
 # Map MCP server names/descriptions to nAIm categories
 MCP_CATEGORY_KEYWORDS = [
@@ -157,6 +158,9 @@ def main():
     parser.add_argument("--limit", type=int, default=100,
                         help="Max servers to import (default 100, use 0 for all)")
     args = parser.parse_args()
+
+    if args.do_import and not NAIM_KEY:
+        raise SystemExit("Missing NAIM_API_KEY env var. Refusing to import.")
 
     print("Fetching MCP servers...", flush=True)
     raw = fetch_from_registry()

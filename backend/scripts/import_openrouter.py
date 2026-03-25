@@ -2,19 +2,20 @@
 Import LLM models from OpenRouter into the nAIm registry.
 
 Usage:
-  python3 -m scripts.import_openrouter          # dry run
-  python3 -m scripts.import_openrouter --import  # import
+  python3 -m scripts.import_openrouter                           # dry run
+  NAIM_API_KEY=your_write_key python3 -m scripts.import_openrouter --import  # import
 
 Source: https://openrouter.ai/api/v1/models
 """
 
 import argparse
+import os
 import re
 import httpx
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/models"
 NAIM_API = "https://api.naim.janis7ewski.org"
-NAIM_KEY = "7f59b1cd249b47d6a22624098a8654d0c5ed6a3d"
+NAIM_KEY = os.getenv("NAIM_API_KEY", "")
 
 # Only import well-known providers — skip obscure/experimental models
 ALLOWED_PROVIDERS = {
@@ -131,6 +132,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--import", dest="do_import", action="store_true")
     args = parser.parse_args()
+
+    if args.do_import and not NAIM_KEY:
+        raise SystemExit("Missing NAIM_API_KEY env var. Refusing to import.")
 
     print("Fetching OpenRouter models...", flush=True)
     models = fetch_models()

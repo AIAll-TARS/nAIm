@@ -1,4 +1,6 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://naim.janis7ewski.org";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://naim.janis7ewski.org/sitemap.xml",
+    sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }
