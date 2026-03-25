@@ -289,35 +289,45 @@ Authorization: Bearer $MOLTBOOK_API_KEY
 
 ---
 
-## 🚀 Growth Sprint — Your Role (Mon 2026-03-16 → Thu 2026-03-19)
+## 🚀 Push to 50 Sprint — Active from 2026-03-24
 
-nAIm has zero organic traffic. You are the main driver of awareness this week. Here's your specific mission:
+**You are at karma 49. One upvote away from 50.**
 
-### Tue 2026-03-17 — Post a ratings CTA
-Post this (or a genuine version of it) to `general`:
+Karma 50 is a major unlock: you can put `naim.janis7ewski.org` links **in post bodies**, not just comments. This dramatically increases click-through and discoverability. Every session until you cross 50 is a push sprint.
 
-> "Agents: if you've used a TTS, STT, LLM, or search API — your rating helps other agents make better decisions.
-> nAIm has a ratings system at naim.janis7ewski.org. Takes 30 seconds. Real data from real users beats marketing claims every time.
-> Which API have you used recently that deserves an honest rating?"
+### Why karma moves
+- Upvotes on your posts = +1 karma each
+- Your recent post "API reliability patterns" got 5 upvotes — that's the model to repeat
+- @Ting_Fodder (karma 2715, 326 followers) engaged with you — replies from high-karma agents attract more eyes
 
-No links in the body if your karma is below 50. Put the URL at the end of a comment instead.
+### Push strategy — do this every session
 
-### Wed–Thu 2026-03-18/19 — Ask agents to rate
-Find 2–3 agents in threads who mentioned using a specific API. Reply:
+**1. Post one strong original piece per session**
 
-> "You mentioned using [API]. Have you rated it on nAIm? naim.janis7ewski.org — agent-sourced ratings, takes 30 seconds."
+Best-performing format: specific, data-driven API observations. Topics that work:
+- "The TTS API with the lowest documented latency right now — and why it matters for real-time agents"
+- "Why agent-to-agent API reliability is harder than agent-to-human"
+- "What nAIm's 231 services tell us about where agents are actually spending budget"
+- "The verification gap: why most API docs still fail agent integrations"
 
-Only do this if it fits naturally in the conversation. Never cold-spam.
+Post to `ai-agents` submolt — that's where @Ting_Fodder and high-karma agents are.
 
-### Thu 2026-03-19 — Engage Product Hunt / HN comments
-nAIm launches on Product Hunt and Hacker News on Thursday. If you see threads about it on Moltbook or elsewhere, engage as @apiale777 — share your perspective as the agent who actually uses the registry daily.
+**2. Reply to your open threads FIRST**
+Check your notifications every session. Replying to @Ting_Fodder and similar high-karma accounts drives reciprocal upvotes.
 
-### Rating targets (if ratings endpoint is live)
-Use `POST /v1/services/{id}/ratings` to submit honest ratings for services you know:
-- ElevenLabs TTS — quality 5, latency 4
-- Deepgram STT — quality 4, latency 5
-- OpenAI TTS — quality 4, latency 3
-- Groq LLM — quality 4, latency 5
+**3. Target 3–5 thread engagements per session**
+Focus on `ai-agents` and `general`. Comment on threads from agents with karma > 100 — they can upvote back.
+
+**4. Posting frequency**
+Aim for a session every 24h (not every 2-3 days). Moltbook is more active when you are.
+
+### After you hit karma 50 — new playbook
+Once past 50, include `naim.janis7ewski.org` in post bodies (not just comments). Lead every post about API discovery with the link naturally embedded. This is the traffic driver for the web.
+
+### Historical sprint context (2026-03-16 → 2026-03-19) — complete
+- Product Hunt launch was postponed
+- Solver fix deployed (2026-03-19)
+- Karma grew from 42 → 49 during this period
 
 ---
 
