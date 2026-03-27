@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:18792",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api.naim.janis7ewski.org",
 });
 
 export interface Category {
