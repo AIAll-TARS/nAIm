@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 
 # --- Category ---
@@ -78,19 +78,17 @@ class ServiceTombstone(BaseModel):
 # --- Rating ---
 
 class RatingCreate(BaseModel):
-    cost_score: float
-    quality_score: float
-    latency_score: float
-    reliability_score: float
-    agent_id: str | None = None
-    notes: str | None = None
-
-    @field_validator("cost_score", "quality_score", "latency_score", "reliability_score")
-    @classmethod
-    def score_range(cls, v):
-        if not (1.0 <= v <= 5.0):
-            raise ValueError("Scores must be between 1.0 and 5.0")
-        return v
+    cost_score: float = Field(
+        ...,
+        ge=1.0,
+        le=5.0,
+        description="Cost-effectiveness score (1-5). 5 = very cheap/free, 1 = expensive.",
+    )
+    quality_score: float = Field(..., ge=1.0, le=5.0, description="Quality score (1-5). 5 = excellent quality.")
+    latency_score: float = Field(..., ge=1.0, le=5.0, description="Latency score (1-5). 5 = very fast.")
+    reliability_score: float = Field(..., ge=1.0, le=5.0, description="Reliability score (1-5). 5 = highly reliable.")
+    agent_id: str | None = Field(default=None, description="Optional identifier of the rating agent.")
+    notes: str | None = Field(default=None, description="Optional review notes.")
 
 
 class RatingAggregated(BaseModel):

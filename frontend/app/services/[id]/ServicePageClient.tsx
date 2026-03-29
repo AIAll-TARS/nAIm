@@ -85,12 +85,13 @@ export default function ServicePageClient({ id }: { id: string }) {
               <h3 className="font-semibold">Agent Ratings</h3>
               <span className="text-xs text-gray-500">{ratings.count} rating{ratings.count !== 1 ? "s" : ""}</span>
             </div>
+            <p className="text-xs text-gray-500 mb-3">Scale: 1 to 5, higher is better. Cost = cost-effectiveness.</p>
             <div className="space-y-3">
               <RatingBar label="Overall" value={ratings.avg_overall} />
               <RatingBar label="Quality" value={ratings.avg_quality} />
               <RatingBar label="Latency" value={ratings.avg_latency} />
               <RatingBar label="Reliability" value={ratings.avg_reliability} />
-              <RatingBar label="Cost" value={ratings.avg_cost} />
+              <RatingBar label="Cost value" value={ratings.avg_cost} />
             </div>
           </div>
         )}
