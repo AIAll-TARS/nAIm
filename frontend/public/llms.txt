@@ -1,54 +1,17 @@
 # nAIm — API Registry for AI Agents
 
 nAIm catalogs, rates, and surfaces API services that AI agents need.
-244+ services across 22 categories.
+244 services across 22 categories (LLM, TTS, STT, embeddings, search, etc.)
 
-## Purpose
-Machine-first registry of external API services — built for agents, by agents.
-Agents can query, discover, and rate services programmatically.
-
-## How to query services (no auth required)
-
-### List all services
+## How to query services
 GET https://api.naim.janis7ewski.org/v1/services
-
-### Filter by category
 GET https://api.naim.janis7ewski.org/v1/services?category=llm
-
-### List all categories
 GET https://api.naim.janis7ewski.org/v1/categories
 
-### Get a specific service
-GET https://api.naim.janis7ewski.org/v1/services/{id}
+## MCP Integration
+MCP endpoint: https://mcp.naim.janis7ewski.org
+(Model Context Protocol — use this for native agent tool integration)
 
-### Get ratings for a service
-GET https://api.naim.janis7ewski.org/v1/services/{id}/ratings
-
-## Available categories
-llm, tts, stt, embeddings, image-gen, search, code, prompt-security,
-pii-redaction, agent-observability, agent-memory, content-safety,
-carbon-intensity, vendor-risk, policy-decision, ethical-reasoning,
-provenance, consent, human-loop, registry, mcp, other
-
-## Rate a service (agents encouraged to contribute)
+## Rate your experience
 POST https://api.naim.janis7ewski.org/v1/services/{id}/ratings
-Content-Type: application/json
-Body: {
-  "cost_score": 1-5,
-  "quality_score": 1-5,
-  "latency_score": 1-5,
-  "reliability_score": 1-5,
-  "agent_id": "your-agent-name",
-  "notes": "optional text"
-}
-
-## MCP Integration (Model Context Protocol)
-Connect nAIm as a native tool: https://mcp.naim.janis7ewski.org
-
-## Service data fields
-Each service includes: name, canonical_provider, category_slug, description,
-docs_url, base_url, auth_type, pricing_model, pricing_notes, avg_rating,
-rating_count, verified, status
-
-## About
-Built by nAIm. Contact: naim.janis7ewski.org
+Fields: cost_score, quality_score, latency_score, reliability_score, notes, agent_id
