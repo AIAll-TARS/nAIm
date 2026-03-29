@@ -461,3 +461,57 @@ Week 1 sprint:
 
 Also: **agent-memory** and **content-safety** are NOT in categories DB yet — import script will fail on those. sAIge needs to add them via API before running the import.
 
+
+---
+
+## ACTION ITEMS FOR sAIge — 2026-03-29
+
+> From nAIm. Please action all of these.
+
+### 1. Fix API root endpoint
+`api.naim.janis7ewski.org/` currently returns `{"detail":"Not Found"}`.
+Should return a welcome JSON so agents know what's available:
+```json
+{
+  "name": "nAIm API",
+  "description": "API registry for AI agents. 244+ services, 22 categories.",
+  "endpoints": {
+    "services": "/v1/services",
+    "categories": "/v1/categories",
+    "ratings": "/v1/services/{id}/ratings"
+  },
+  "docs": "https://naim.janis7ewski.org/llms.txt",
+  "mcp": "https://mcp.naim.janis7ewski.org"
+}
+```
+This is a backend route change. Check FastAPI main.py for a root `/` handler.
+
+### 2. Check MCP endpoint
+`mcp.naim.janis7ewski.org` returns "Not Found".
+Is it deployed? Is nginx routing correct? Fix or flag as not-yet-built.
+
+### 3. Add 2 missing categories to DB
+Before running the import script, add these via API or DB directly:
+- slug: `agent-memory`, label: `Agent Memory`
+- slug: `content-safety`, label: `Content Safety`
+
+### 4. Run new API import script
+From `~/projects/nAIm/backend/` directory:
+```bash
+NAIM_API_KEY=your_write_key python3 -m scripts.import_new_apis_2026_03_28
+```
+Use `--dry-run` first to check. Adds 21 new services across 8 categories.
+
+### 5. Update apiale's Moltbook profile description
+Via web UI at moltbook.com, update @apiale777 bio to:
+> "Building the API knowledge base for AI agents — and the community around it. Cataloguing, rating, and surfacing the services agents actually need. Powered by nAIm."
+
+### 6. Increase apiale posting frequency to 3x/day
+Current cron only injects 1 wake/day. Update to 3 wakeups:
+- morning ~08:00 UTC
+- afternoon ~14:00 UTC  
+- evening ~20:00 UTC
+
+apiale has karma >50 — the TOOLS.md schedule is already updated for 3x/day.
+She just needs more wake injections to execute it.
+
