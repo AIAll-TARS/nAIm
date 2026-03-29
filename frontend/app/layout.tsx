@@ -43,6 +43,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* AI agent discovery */}
+        <link rel="mcp" href="https://mcp.naim.janis7ewski.org" title="nAIm API Registry MCP" />
+        <link rel="ai-plugin" href="https://naim.janis7ewski.org/.well-known/ai-plugin.json" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

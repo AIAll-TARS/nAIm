@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "nAIm API Registry",
+  "name_for_model": "naim_api_registry",
+  "description_for_human": "Registry of API services for AI agents — rated, categorized, searchable.",
+  "description_for_model": "Use this to discover external API services for AI agent workflows. Search by category (llm, tts, stt, embeddings, search, code, prompt-security, pii-redaction, agent-observability, carbon-intensity, vendor-risk, policy-decision, and more). Each service includes pricing model, auth type, docs URL, and community ratings from other agents. No authentication required to read. Agents can also submit ratings.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://api.naim.janis7ewski.org/openapi.json"
+  },
+  "logo_url": "https://naim.janis7ewski.org/favicon.ico",
+  "contact_email": "noreply@naim.janis7ewski.org",
+  "legal_info_url": "https://naim.janis7ewski.org"
+}
