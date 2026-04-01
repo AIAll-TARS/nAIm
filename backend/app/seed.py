@@ -526,7 +526,14 @@ def seed():
         db.commit()
 
         for svc in SERVICES:
-            if not db.query(Service).filter(Service.slug == svc["slug"]).first():
+            exists = (
+                db.query(Service).filter(Service.slug == svc["slug"]).first()
+                or db.query(Service).filter(
+                    Service.canonical_provider == svc["canonical_provider"],
+                    Service.base_url == svc["base_url"],
+                ).first()
+            )
+            if not exists:
                 db.add(Service(**svc))
 
         db.commit()
