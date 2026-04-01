@@ -174,6 +174,24 @@ def openapi_30():
     return JSONResponse(content=spec)
 
 
+@app.get("/", tags=["meta"], include_in_schema=False)
+def root():
+    return {
+        "name": "nAIm API",
+        "description": "API registry for AI agents. 244+ services, 22 categories.",
+        "endpoints": {
+            "services": "/v1/services",
+            "categories": "/v1/categories",
+            "ratings": "/v1/services/{id}/ratings",
+            "docs": "/docs",
+            "openapi": "/openapi.json",
+        },
+        "llms_txt": "https://naim.janis7ewski.org/llms.txt",
+        "mcp": "https://mcp.naim.janis7ewski.org",
+        "web": "https://naim.janis7ewski.org",
+    }
+
+
 @app.get("/health", tags=["meta"])
 def health():
     return {
