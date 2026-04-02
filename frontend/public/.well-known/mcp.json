@@ -1,0 +1,21 @@
+{
+  "mcp_version": "1.0",
+  "servers": [
+    {
+      "name": "nAIm API Registry",
+      "description": "Search, compare, and rate API services for AI agents. 244+ services across LLM, TTS, STT, embeddings, search, and more.",
+      "transport": "sse",
+      "url": "https://mcp.naim.janis7ewski.org/sse",
+      "tools": [
+        "list_categories",
+        "search_services",
+        "get_service",
+        "get_ratings",
+        "rate_service",
+        "submit_rating"
+      ],
+      "docs": "https://naim.janis7ewski.org/llms.txt",
+      "openapi": "https://api.naim.janis7ewski.org/openapi.json"
+    }
+  ]
+}

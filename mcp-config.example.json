@@ -1,6 +1,12 @@
 {
   "mcpServers": {
-    "nAIm": {
+    "naim-remote": {
+      "comment": "Remote SSE — no install needed, works in any MCP-compatible agent",
+      "type": "sse",
+      "url": "https://mcp.naim.janis7ewski.org/sse"
+    },
+    "naim-local": {
+      "comment": "Local stdio — for development or self-hosted setups",
       "command": "python",
       "args": ["-m", "app.mcp.server"],
       "env": {

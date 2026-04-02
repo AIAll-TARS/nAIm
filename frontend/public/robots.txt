@@ -1,3 +1,10 @@
 User-agent: *
 Allow: /
+
 Sitemap: https://naim.janis7ewski.org/sitemap.xml
+
+# AI Agent discovery
+MCP-SSE: https://mcp.naim.janis7ewski.org/sse
+MCP-Manifest: https://naim.janis7ewski.org/.well-known/mcp.json
+API: https://api.naim.janis7ewski.org/v1/services
+LLMs: https://naim.janis7ewski.org/llms.txt

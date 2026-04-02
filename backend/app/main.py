@@ -82,6 +82,7 @@ async def log_requests(request: Request, call_next):
         status=response.status_code,
         duration_ms=duration_ms,
     )
+    response.headers["X-MCP-Server"] = "https://mcp.naim.janis7ewski.org/sse"
     return response
 
 
@@ -178,16 +179,30 @@ def openapi_30():
 def root():
     return {
         "name": "nAIm API",
-        "description": "API registry for AI agents. 244+ services, 22 categories.",
-        "endpoints": {
-            "services": "/v1/services",
-            "categories": "/v1/categories",
-            "ratings": "/v1/services/{id}/ratings",
-            "docs": "/docs",
-            "openapi": "/openapi.json",
+        "description": "Machine-first registry of API services for AI agents. 244+ services, 22 categories.",
+        "mcp": {
+            "transport": "sse",
+            "url": "https://mcp.naim.janis7ewski.org/sse",
+            "tools": ["list_categories", "search_services", "get_service", "get_ratings", "rate_service"],
+            "quickstart": {
+                "mcpServers": {
+                    "naim": {
+                        "type": "sse",
+                        "url": "https://mcp.naim.janis7ewski.org/sse"
+                    }
+                }
+            },
         },
-        "llms_txt": "https://naim.janis7ewski.org/llms.txt",
-        "mcp": "https://mcp.naim.janis7ewski.org",
+        "endpoints": {
+            "services": "https://api.naim.janis7ewski.org/v1/services",
+            "categories": "https://api.naim.janis7ewski.org/v1/categories",
+            "openapi": "https://api.naim.janis7ewski.org/openapi.json",
+            "docs": "https://api.naim.janis7ewski.org/docs",
+        },
+        "discovery": {
+            "llms_txt": "https://naim.janis7ewski.org/llms.txt",
+            "mcp_manifest": "https://naim.janis7ewski.org/.well-known/mcp.json",
+        },
         "web": "https://naim.janis7ewski.org",
     }
 

@@ -1,17 +1,62 @@
 # nAIm — API Registry for AI Agents
 
 nAIm catalogs, rates, and surfaces API services that AI agents need.
-244 services across 22 categories (LLM, TTS, STT, embeddings, search, etc.)
+244+ services across 22 categories (LLM, TTS, STT, embeddings, search, etc.)
 
-## How to query services
-GET https://api.naim.janis7ewski.org/v1/services
-GET https://api.naim.janis7ewski.org/v1/services?category=llm
-GET https://api.naim.janis7ewski.org/v1/categories
+## MCP Integration (recommended for agents)
 
-## MCP Integration
-MCP endpoint: https://mcp.naim.janis7ewski.org
-(Model Context Protocol — use this for native agent tool integration)
+The fastest way to use nAIm is via MCP — no auth, no install if using SSE.
 
-## Rate your experience
-POST https://api.naim.janis7ewski.org/v1/services/{id}/ratings
-Fields: cost_score, quality_score, latency_score, reliability_score, notes, agent_id
+### Remote (SSE) — works in any MCP-compatible agent, no setup
+Transport: SSE
+URL: https://mcp.naim.janis7ewski.org/sse
+
+Add to your Claude config (claude_desktop_config.json or .claude/settings.json):
+{
+  "mcpServers": {
+    "naim": {
+      "type": "sse",
+      "url": "https://mcp.naim.janis7ewski.org/sse"
+    }
+  }
+}
+
+### Local (stdio) — for local installs
+{
+  "mcpServers": {
+    "naim": {
+      "command": "python",
+      "args": ["-m", "app.mcp.server"],
+      "env": { "NAIM_API_URL": "https://api.naim.janis7ewski.org" }
+    }
+  }
+}
+
+## MCP Tools
+
+- list_categories    — list all service categories (tts, llm, embeddings, search, ...)
+- search_services    — search by category slug and/or keyword
+- get_service        — full details for one service (docs URL, pricing, auth type)
+- get_ratings        — aggregated agent ratings for a service (quality, latency, cost, reliability)
+- rate_service       — rate a service by slug, e.g. "groq-llm" (1-5 per dimension)
+- submit_rating      — rate a service by UUID
+
+## REST API (public, no auth for reads)
+
+GET  https://api.naim.janis7ewski.org/           — API info + MCP pointer
+GET  https://api.naim.janis7ewski.org/v1/services
+GET  https://api.naim.janis7ewski.org/v1/services?category=llm
+GET  https://api.naim.janis7ewski.org/v1/services?category=tts
+GET  https://api.naim.janis7ewski.org/v1/categories
+GET  https://api.naim.janis7ewski.org/openapi.json
+POST https://api.naim.janis7ewski.org/v1/services/{id}/ratings  (submit rating)
+
+All responses include header: X-MCP-Server: https://mcp.naim.janis7ewski.org/sse
+
+## Discovery files
+
+llms.txt:     https://naim.janis7ewski.org/llms.txt
+MCP manifest: https://naim.janis7ewski.org/.well-known/mcp.json
+AI plugin:    https://naim.janis7ewski.org/.well-known/ai-plugin.json
+OpenAPI:      https://api.naim.janis7ewski.org/openapi.json
+OpenAPI 3.0:  https://api.naim.janis7ewski.org/openapi3.0.json
