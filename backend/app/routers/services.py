@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
@@ -156,3 +156,67 @@ def registry(
     _registry_cache["data"] = response
     _registry_cache["expires_at"] = time.time() + REGISTRY_CACHE_TTL
     return response
+
+
+@router.get("/stats", tags=["meta"])
+def stats(db: Session = Depends(get_db)):
+    """Registry statistics — service counts, ratings, top services, recent additions."""
+    now = datetime.now(timezone.utc)
+    week_ago = now - timedelta(days=7)
+
+    total_services = db.query(func.count(Service.id)).filter(
+        Service.status == "approved", Service.deleted_at.is_(None)
+    ).scalar()
+
+    total_ratings = db.query(func.count(Rating.id)).scalar()
+
+    total_categories = db.query(func.count(Category.id)).scalar()
+
+    # Services added in last 7 days
+    recent_count = db.query(func.count(Service.id)).filter(
+        Service.status == "approved",
+        Service.deleted_at.is_(None),
+        Service.created_at >= week_ago,
+    ).scalar()
+
+    # Per-category breakdown
+    category_rows = db.query(
+        Category.slug, Category.label, func.count(Service.id).label("count")
+    ).outerjoin(Service, (Service.category_slug == Category.slug) & (Service.status == "approved") & (Service.deleted_at.is_(None))
+    ).group_by(Category.slug, Category.label).order_by(func.count(Service.id).desc()).all()
+
+    # Top 5 rated services
+    top_rows = db.query(
+        Service.id, Service.name, Service.slug, Service.category_slug,
+        func.count(Rating.id).label("rating_count"),
+        func.avg((Rating.cost_score + Rating.quality_score + Rating.latency_score + Rating.reliability_score) / 4).label("avg_rating"),
+    ).join(Rating, Rating.service_id == Service.id
+    ).filter(Service.status == "approved", Service.deleted_at.is_(None)
+    ).group_by(Service.id, Service.name, Service.slug, Service.category_slug
+    ).order_by(func.avg((Rating.cost_score + Rating.quality_score + Rating.latency_score + Rating.reliability_score) / 4).desc()
+    ).limit(5).all()
+
+    return {
+        "generated_at": now.isoformat(),
+        "totals": {
+            "services": total_services,
+            "ratings": total_ratings,
+            "categories": total_categories,
+            "services_added_last_7_days": recent_count,
+        },
+        "by_category": [
+            {"slug": r.slug, "label": r.label, "service_count": r.count}
+            for r in category_rows
+        ],
+        "top_rated": [
+            {
+                "id": r.id,
+                "name": r.name,
+                "slug": r.slug,
+                "category": r.category_slug,
+                "avg_rating": round(r.avg_rating, 2),
+                "rating_count": r.rating_count,
+            }
+            for r in top_rows
+        ],
+    }
