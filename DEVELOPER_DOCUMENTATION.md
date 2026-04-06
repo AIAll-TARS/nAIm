@@ -56,7 +56,7 @@ Agent / Human
 
 **Branches:**
 - `dev` — active development
-- `prod` — production (Vercel auto-deploys frontend on push)
+- `main` — production (Vercel auto-deploys frontend on push)
 
 ---
 
@@ -271,7 +271,7 @@ cd nAIm/backend
 docker-compose up -d --build
 
 # Updates
-git pull origin prod
+git pull origin main
 docker-compose up -d --build
 ```
 
@@ -281,7 +281,7 @@ docker-compose up -d --build
 ### Frontend (Vercel)
 
 - Connect Vercel to `AIAll-TARS/nAIm` repo
-- Auto-deploy on push to `prod` branch
+- Auto-deploy on push to `main` branch
 - Set env var: `NEXT_PUBLIC_API_URL=https://api.naim.janis7ewski.org`
 
 ### VPS Ops (handled by sAIge)
@@ -349,8 +349,8 @@ git commit -m "your message"
 git push origin dev
 
 # Deploy to production
-git checkout prod
+git checkout main
 git merge dev
-git push origin prod  # triggers Vercel frontend deploy
+git push origin main  # triggers Vercel frontend deploy
 # SSH to VPS and pull + rebuild for backend
 ```
