@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { Service } from "@/lib/api";
-import { getAgentReadiness } from "@/lib/readiness";
-import { AgentReadinessBadge } from "@/components/AgentReadiness";
 
 const CATEGORY_LABELS: Record<string, string> = {
   tts: "TTS",
@@ -34,8 +32,6 @@ const PRICING_COLORS: Record<string, string> = {
 };
 
 export default function ServiceCard({ service }: { service: Service }) {
-  const readiness = getAgentReadiness(service);
-
   return (
     <Link href={`/services/${service.id}`}>
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-600 transition cursor-pointer">
@@ -48,7 +44,6 @@ export default function ServiceCard({ service }: { service: Service }) {
               {service.verified && (
                 <span className="text-xs bg-green-900/40 text-green-400 px-2 py-0.5 rounded-full">verified</span>
               )}
-              <AgentReadinessBadge readiness={readiness} />
             </div>
             <h2 className="font-semibold text-white truncate">{service.name}</h2>
             <p className="text-xs text-gray-500 mb-2">{service.canonical_provider}</p>

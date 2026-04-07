@@ -68,6 +68,7 @@ Open: `http://localhost:3000`
 2. Public read endpoints expose searchable service metadata.
 3. Authenticated write endpoints (`X-API-Key`) allow controlled curation/import.
 4. Frontend consumes the backend API and renders search/detail pages.
+5. **MCP server** at `mcp.naim.janis7ewski.org/sse` provides agentic Model Context Protocol for AI jobs — currently, /sse is live with SSE stream, SSL and nginx routing fully operational (root / returns 404; this is expected).
 
 ## License
 

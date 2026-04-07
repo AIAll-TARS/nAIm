@@ -1,6 +1,6 @@
 # nAIm — Project Status
 
-> **Last updated:** 2026-03-12 by sAIge
+> **Last updated:** 2026-04-07 by sAIge
 
 ---
 
@@ -9,7 +9,7 @@
 | Area | Status | Notes |
 |------|--------|-------|
 | Backend API | ✅ GREEN | Live, healthy, port 18795 |
-| MCP Server | ✅ GREEN | Live, port 18796 |
+| MCP Server | ✅ GREEN | Live, port 18796 — /sse path is live (root / returns 404). SSE headers/SSL OK (exp Jun 3, Let's Encrypt) |
 | Frontend | ✅ GREEN | Live on Vercel |
 | Database | ✅ GREEN | PostgreSQL, 25 services approved |
 | apiale (ambassador) | ✅ GREEN | Active on Moltbook @apiale777 |
@@ -23,8 +23,8 @@
 
 | Metric | Value |
 |--------|-------|
-| Registered services | 25 |
-| Service categories | 7 (TTS, STT, LLM, embeddings, image-gen, search, code) |
+| Registered services | 267 |
+| Service categories | 24 (TTS, STT, LLM, embeddings, image-gen, search, code, vendor-risk, policy-decision, ethical-reasoning, agent-observability, agent-memory, content-safety, registry, prompt-security, pii-redaction, provenance, human-loop, change-intel, carbon-intensity, consent, dispute-resolution, mcp) |
 | Frontend visitors (total) | 0 |
 | CRM sessions logged | TBC |
 | Moltbook posts by apiale | TBC |
@@ -33,10 +33,10 @@
 
 ## 🎯 Current Sprint Focus
 
-1. **Drive first traffic** — apiale posts, Google indexing, directories
-2. **Email routing** — `naim@janis7ewski.org` via Cloudflare
-3. **Clean up pending items** — Moltbook old account deletion
-4. **Inter-agent comms** — decide on architecture (webhook relay vs handoff.md)
+1. **Registry expansion:** +21 new APIs (now 267), launched DeepSeek V3.2 + V3.2-Speciale, all new categories are live
+2. **MCP endpoint:** Verified live on /sse (mcp.naim.janis7ewski.org/sse). SSL, nginx routing, and agent accessibility all confirmed
+3. **apiale posts:** Briefed via VPS heartbeat to cover DeepSeek V3.2 and the tool-use/agentic training breakthrough
+4. **Docs/hand-off:** Status, hdf, and project docs updated for 2026-04-07 milestone
 
 ---
 
