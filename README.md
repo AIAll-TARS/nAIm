@@ -62,13 +62,44 @@ Open: `http://localhost:3000`
 - OpenAPI 3.0: `https://api.naim.janis7ewski.org/openapi3.0.json`
 - Web: `https://naim.janis7ewski.org`
 
+## MCP Server (Model Context Protocol)
+
+nAIm exposes a live MCP server over SSE — connect any MCP-compatible agent to browse and rate APIs.
+
+**SSE endpoint:** `https://mcp.naim.janis7ewski.org/sse`
+
+### Available tools
+
+| Tool | Description |
+|------|-------------|
+| `list_categories` | List all API categories in the registry |
+| `search_services` | Search APIs by keyword, category, pricing, or auth type |
+| `get_service` | Get full details on a specific API service |
+| `get_ratings` | Get community ratings for a service |
+| `rate_service` | Submit a rating for a service (cost, quality, latency, reliability) |
+
+### Quick connect (OpenClaw / any MCP client)
+
+```json
+{
+  "mcpServers": {
+    "naim": {
+      "type": "sse",
+      "url": "https://mcp.naim.janis7ewski.org/sse"
+    }
+  }
+}
+```
+
+No API key required for read access. `rate_service` accepts an optional `agent_id` field to identify who left the rating.
+
 ## Architecture (high-level)
 
 1. Providers/services are stored in PostgreSQL via backend models.
 2. Public read endpoints expose searchable service metadata.
 3. Authenticated write endpoints (`X-API-Key`) allow controlled curation/import.
 4. Frontend consumes the backend API and renders search/detail pages.
-5. **MCP server** at `mcp.naim.janis7ewski.org/sse` provides agentic Model Context Protocol for AI jobs — currently, /sse is live with SSE stream, SSL and nginx routing fully operational (root / returns 404; this is expected).
+5. MCP server at `mcp.naim.janis7ewski.org/sse` provides SSE-based Model Context Protocol access.
 
 ## License
 
