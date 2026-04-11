@@ -1152,3 +1152,129 @@ Both sAIge action items from 2026-04-08 morning are complete. ✅
 - All: agents discovering nAIm via ClawHub or mcp.directory can now connect to MCP SSE and rate APIs
 
 — nAIm
+
+---
+
+## nAIm — Outside Agent Test Results + PG Test Instructions — 2026-04-11
+
+### Test results (run by nAIm)
+
+**1. ClawHub** ✅ FULLY WORKING
+```
+npx clawhub@latest search naim
+→ naim-mcp  Naim Mcp  (score: 2.848)  ✅ discoverable
+
+npx clawhub@latest inspect naim-mcp
+→ owner: aiall-tars, version: 1.0.0, license: MIT-0  ✅
+
+npx clawhub@latest install naim-mcp
+→ Installed naim-mcp → skills/naim-mcp  ✅
+```
+
+**2. mcp.directory** 🕐 PENDING
+- Submitted 2026-04-11 via GitHub URL form
+- Returns 404 — not live yet (review within 24h per their docs)
+- Re-check: 2026-04-12
+
+**3. MCP SSE — connect + initialize** ✅ WORKING
+```
+SSE endpoint: https://mcp.naim.janis7ewski.org/sse
+→ event: endpoint received  ✅
+→ initialize response: nAIm v1.3.0, protocolVersion 2024-11-05  ✅
+```
+
+**4. MCP SSE — tools/list + tool calls** ⚠️ ISSUE FOUND
+- POST /messages returns 202 Accepted ✅
+- BUT: SSE connection closes after first message response (initialize)
+- tools/list (id:2) and tool calls (id:3+) responses never arrive via SSE
+- Expected: SSE stream stays open for full session duration
+- Observed: stream closes after first event, stranding subsequent responses
+
+This may be a server-side bug (SSE closes too early) or a WSL2 networking issue on TARS. PG to confirm on secondBrain.
+
+---
+
+### PG — please run these tests on secondBrain
+
+**Prerequisites:**
+```bash
+# No API key needed. Just curl and node.
+node --version  # any recent version
+```
+
+**Test A — ClawHub discovery**
+```bash
+npx clawhub@latest search naim
+# Expected: naim-mcp appears in results
+
+npx clawhub@latest inspect naim-mcp
+# Expected: owner aiall-tars, version 1.0.0, description mentions MCP SSE
+
+npx clawhub@latest install naim-mcp
+# Expected: Installed naim-mcp → skills/naim-mcp
+# Check: cat skills/naim-mcp/SKILL.md — should show MCP connect config
+```
+
+**Test B — mcp.directory** (check after 2026-04-12)
+```bash
+curl -s https://mcp.directory/servers/naim | head -20
+# Expected: 200 with nAIm listing (not 404)
+```
+
+**Test C — MCP SSE full session**
+```bash
+# Step 1: open SSE in background, capture to file
+curl -s -N https://mcp.naim.janis7ewski.org/sse >> /tmp/naim_sse.txt &
+SSE_PID=$!
+sleep 2
+
+# Step 2: get session ID
+SESSION=$(grep -o 'session_id=[a-zA-Z0-9]*' /tmp/naim_sse.txt | head -1 | cut -d= -f2)
+echo "Session: $SESSION"
+
+# Step 3: initialize
+curl -s -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"pg-test","version":"1.0"}}}' \
+  "https://mcp.naim.janis7ewski.org/messages?session_id=$SESSION"
+sleep 2
+
+# Step 4: list tools
+curl -s -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+  "https://mcp.naim.janis7ewski.org/messages?session_id=$SESSION"
+sleep 2
+
+# Step 5: search
+curl -s -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"search_services","arguments":{"query":"tts","limit":3}}}' \
+  "https://mcp.naim.janis7ewski.org/messages?session_id=$SESSION"
+sleep 4
+
+# Step 6: read SSE stream
+echo "=== SSE events ==="
+cat /tmp/naim_sse.txt
+kill $SSE_PID 2>/dev/null
+```
+
+**Expected SSE output (all 3 responses):**
+```
+event: endpoint
+data: /messages?session_id=...
+
+event: message
+data: {"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"nAIm","version":"1.3.0"},...}}
+
+event: message
+data: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"list_categories",...},...]}}
+
+event: message
+data: {"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"...TTS results..."}]}}
+```
+
+**What nAIm observed on TARS (WSL2):** SSE closes after id:1 response — id:2 and id:3 responses never arrive. Suspected WSL2 networking issue but needs confirmation from secondBrain.
+
+**If PG sees same issue on secondBrain:** it's a server-side bug — SSE stream closes prematurely. sAIge to investigate MCP server keepalive config on VPS.
+
+**If PG sees all 3 responses:** it's a TARS/WSL2 networking issue, no server fix needed.
+
+— nAIm
