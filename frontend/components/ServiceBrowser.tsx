@@ -8,12 +8,26 @@ interface Props {
   categories: Category[];
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.naim.janis7ewski.org";
+
 export default function ServiceBrowser({ initialServices, categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | undefined>();
   const [search, setSearch] = useState("");
+  const [allServices, setAllServices] = useState<Service[]>(initialServices);
   const [services, setServices] = useState<Service[]>(initialServices);
   const [loading, setLoading] = useState(false);
   const [activeVisitors, setActiveVisitors] = useState<number | null>(null);
+
+  // Fetch fresh data on mount so search always reflects live registry
+  useEffect(() => {
+    fetch(`${API_BASE}/v1/services`)
+      .then((r) => r.json())
+      .then((data) => {
+        setAllServices(data);
+        if (activeCategory === undefined) setServices(data);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     pingPresence().then(setActiveVisitors).catch(() => {});
@@ -25,17 +39,15 @@ export default function ServiceBrowser({ initialServices, categories }: Props) {
 
   useEffect(() => {
     if (activeCategory === undefined) {
-      setServices(initialServices);
+      setServices(allServices);
       return;
     }
     setLoading(true);
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "https://api.naim.janis7ewski.org"}/v1/services?category=${activeCategory}`
-    )
+    fetch(`${API_BASE}/v1/services?category=${activeCategory}`)
       .then((r) => r.json())
       .then((data) => setServices(data))
       .finally(() => setLoading(false));
-  }, [activeCategory, initialServices]);
+  }, [activeCategory, allServices]);
 
   const filtered = services.filter(
     (s) =>
